@@ -61,6 +61,14 @@
         "contentMediaType": "application/x-rds"
       }
     },
+    "cor_urban_values": {
+      "title": "Urban CORINE CLC codes",
+      "description": "List of CORINE CLC class codes classified as urban (codes 100–199).",
+      "schema": {
+        "type": "object",
+        "contentMediaType": "application/x-rds"
+      }
+    },
     "clc_legend": {
       "title": "CORINE CLC legend table",
       "description": "Full CORINE CLC legend table with class codes, labels, and RGB colors.",

@@ -61,6 +61,10 @@ class AttachLegendToCorineCLCProcessor(BaseProcessor):
         corineCLC_filepath = f'{output_dir}/{corineCLC_filename}'
         corineCLC_link = f'{output_url}/{corineCLC_filename}'
 
+        cor_urban_values_filename = 'cor_urban_values-%s.rds' % self.my_job_id
+        cor_urban_values_filepath = f'{output_dir}/{cor_urban_values_filename}'
+        cor_urban_values_link = f'{output_url}/{cor_urban_values_filename}'
+
         clc_legend_filename = 'clc_legend-%s.rds' % self.my_job_id
         clc_legend_filepath = f'{output_dir}/{clc_legend_filename}'
         clc_legend_link = f'{output_url}/{clc_legend_filename}'
@@ -70,6 +74,7 @@ class AttachLegendToCorineCLCProcessor(BaseProcessor):
         script_args = [
             in_inputFile1_corineYear_rds,
             in_inputFile2_corineCLC_rds,
+            cor_urban_values_filepath,
             clc_legend_filepath
         ]
 
@@ -93,6 +98,11 @@ class AttachLegendToCorineCLCProcessor(BaseProcessor):
                         "title": self.metadata['outputs']['corineCLC_with_legend']['title'],
                         "description": self.metadata['outputs']['corineCLC_with_legend']['description'],
                         "href": f'{corineCLC_link}'
+                    },
+                    "cor_urban_values": {
+                        "title": self.metadata['outputs']['cor_urban_values']['title'],
+                        "description": self.metadata['outputs']['cor_urban_values']['description'],
+                        "href": f'{cor_urban_values_link}'
                     },
                     "clc_legend": {
                         "title": self.metadata['outputs']['clc_legend']['title'],
