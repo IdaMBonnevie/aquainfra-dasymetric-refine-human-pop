@@ -272,8 +272,18 @@ tryCatch({
   }
   
   lau_in_catchment <- readRDS(lau_in_catchment_rds_path)
-  
-  lau_value_col_focus <- paste0("POP_", 
+
+  if (nrow(lau_in_catchment) == 0) {
+    stop(
+      sprintf(
+        "No LAU units found for this catchment for pop_focus_year %s; cannot perform dasymetric refinement.",
+        pop_focus_year
+      ),
+      call. = FALSE
+    )
+  }
+
+  lau_value_col_focus <- paste0("POP_",
                                 pop_focus_year) #"values"
   
   # Read spatial focus object
