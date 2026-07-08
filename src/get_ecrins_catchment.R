@@ -214,7 +214,7 @@ get_specific_catchment <- function(catchment_id,
 args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) != 3) {
-  stop("Usage: Rscript get_focus_catchment.R <catchment_id> <output_catchment_gpkg_path> <output_countries_rds_path>", 
+  stop("Usage: Rscript get_ecrins_catchment.R <catchment_id> <output_catchment_gpkg_path> <output_countries_rds_path>",
        call. = FALSE)
 }
 

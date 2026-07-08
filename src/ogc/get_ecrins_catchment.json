@@ -1,9 +1,9 @@
 {
   "version": "0.1.0",
-  "id": "get-focus-catchment",
+  "id": "get-ecrins-catchment",
   "use_case": "Human Population",
   "title": {
-    "en": "Get focus catchment"
+    "en": "Get ECRINS catchment"
   },
   "description": {
     "en": "Queries the EEA ECRINS (European Catchments and Rivers Network System) ArcGIS REST service for a specific functional elementary catchment by ID, fixes invalid geometries, reprojects to EPSG:3035, and looks up the list of countries that catchment overlaps from a fixed catchment-to-country mapping (R function 'get_specific_catchment'). Valid catchment IDs range from 1 to 118"

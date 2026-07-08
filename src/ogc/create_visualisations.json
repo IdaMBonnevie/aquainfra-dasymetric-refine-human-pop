@@ -56,7 +56,7 @@
     },
     "inputFile7_catchment_gpkg": {
       "title": "Catchment geometry",
-      "description": "Path to a GeoPackage file containing the focus catchment boundary, overlaid on all maps for context.",
+      "description": "Path to a GeoPackage file containing the ECRINS catchment boundary, overlaid on all maps for context.",
       "schema": { "type": "object", "contentMediaType": "application/geopackage+sqlite3" },
       "minOccurs": 1, "maxOccurs": 1, "keywords": []
     },

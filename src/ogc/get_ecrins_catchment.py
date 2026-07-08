@@ -16,7 +16,7 @@ metadata_title_and_path = script_title_and_path.replace('.py', '.json')
 PROCESS_METADATA = json.load(open(metadata_title_and_path))
 
 
-class GetFocusCatchmentProcessor(BaseProcessor):
+class GetEcrinsCatchmentProcessor(BaseProcessor):
 
     def __init__(self, processor_def):
         super().__init__(processor_def, PROCESS_METADATA)
@@ -24,13 +24,13 @@ class GetFocusCatchmentProcessor(BaseProcessor):
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
         self.image_name = 'human-population-toolbox:20251201'
-        self.script_name = 'get_focus_catchment.R'
+        self.script_name = 'get_ecrins_catchment.R'
 
     def set_job_id(self, job_id: str):
         self.my_job_id = job_id
 
     def __repr__(self):
-        return f'<GetFocusCatchmentProcessor> {self.name}'
+        return f'<GetEcrinsCatchmentProcessor> {self.name}'
 
     def execute(self, data, outputs=None):
 

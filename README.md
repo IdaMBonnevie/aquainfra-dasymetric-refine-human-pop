@@ -40,11 +40,11 @@ docker build -t d2k-toolbox .
 
 ---
 
-### Step 1: Get Focus Catchment
+### Step 1: Get ECRINS Catchment
 
 
 ```bash
-docker run -it --rm -v ./out:/out -e R_SCRIPT=get_focus_catchment.R d2k-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds"
+docker run -it --rm -v ./out:/out -e R_SCRIPT=get_ecrins_catchment.R d2k-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds"
 ```
 
 ---
@@ -235,7 +235,7 @@ docker run -it --rm -v ./out:/out -e R_SCRIPT=process_create_visualizations.R d2
 Use the same commands, or replace paths with full directories if needed:
 
 ```bash
-docker run -it --rm -v $(pwd)/out:/out -e R_SCRIPT=get_focus_catchment.R human-population-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds"
+docker run -it --rm -v $(pwd)/out:/out -e R_SCRIPT=get_ecrins_catchment.R human-population-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds"
 ```
 
 ---
@@ -245,13 +245,13 @@ docker run -it --rm -v $(pwd)/out:/out -e R_SCRIPT=get_focus_catchment.R human-p
 Before running the full workflow, verify that your **Docker image**, **R environment**, and **GDAL bindings** work correctly.
 
 ```bash
-docker run -it --rm -v ./out:/out -e R_SCRIPT=get_focus_catchment.R human-population-toolbox 115 "/out/catchment.gpkg" "/out/countries.rds"
+docker run -it --rm -v ./out:/out -e R_SCRIPT=get_ecrins_catchment.R human-population-toolbox 115 "/out/catchment.gpkg" "/out/countries.rds"
 ```
 
 Expected output (example):
 
 ```
-Fetching focus catchment for ID 115...
+Fetching ECRINS catchment for ID 115...
 Writing catchment to /out/catchment.gpkg
 Writing countries to /out/countries.rds
 Done.
@@ -301,11 +301,11 @@ You can capture Docker logs, run all workflow steps at once, or export your comm
 To save both normal output and error messages to a file, use `*>&1` redirection:
 
 ```powershell (Windows)
-docker run -it --rm -v ./out:/out -e R_SCRIPT=get_focus_catchment.R human-population-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds" *>&1 > step1_log.txt
+docker run -it --rm -v ./out:/out -e R_SCRIPT=get_ecrins_catchment.R human-population-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds" *>&1 > step1_log.txt
 ````
 
 ```bash (macOS/Linux)
-docker run -it --rm -v $(pwd)/out:/out -e R_SCRIPT=get_focus_catchment.R human-population-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds" > step1_log.txt 2>&1
+docker run -it --rm -v $(pwd)/out:/out -e R_SCRIPT=get_ecrins_catchment.R human-population-toolbox "115" "/out/catchment.gpkg" "/out/countries.rds" > step1_log.txt 2>&1
 ````
 
 This stores all console messages from Step 1 in `step1_log.txt`.
