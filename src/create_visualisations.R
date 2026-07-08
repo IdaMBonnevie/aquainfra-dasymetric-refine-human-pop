@@ -21,6 +21,24 @@ library(tmap)
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
+# Prefer preferred_col; fall back to fallback_col if preferred_col has no
+# usable (positive) values for this catchment — e.g. Eurostat's 2021 census
+# grid doesn't cover the UK, but 2018 does.
+resolve_census_grid_value_col <- function(census_grid, preferred_col = "TOT_P_2021", fallback_col = "TOT_P_2018") {
+  col_has_usable_data <- function(col) {
+    col %in% names(census_grid) &&
+      any(!is.na(census_grid[[col]]) & census_grid[[col]] > 0)
+  }
+  if (!col_has_usable_data(preferred_col) && col_has_usable_data(fallback_col)) {
+    message(sprintf(
+      "Note: '%s' has no usable population data for this catchment; falling back to '%s'.",
+      preferred_col, fallback_col
+    ))
+    return(fallback_col)
+  }
+  preferred_col
+}
+
 # --- 3. FUNCTION DEFINITIONS (Original Code) ---
 ################################################################################
 # HELPING FUNCTION
@@ -838,17 +856,17 @@ save_map_pop_errors_at_censusgrid <- function(
   # TOOLTIP
   normal_ll$label_html <- lapply(
     paste0(
-      "<strong>Observed:</strong> ", normal_ll$TOT_P_2021, "<br>",
+      "<strong>Observed:</strong> ", normal_ll[[census_grid_value_col]], "<br>",
       "<strong>Estimated:</strong> ", normal_ll$pop_est_cell1, "<br>",
       "<strong>Difference:</strong> ", round(normal_ll$dif1, 2)
     ),
     htmltools::HTML
   )
-  
+
   special_ll$label_html <- lapply(
     paste0(
       "<strong>No estimation (pop > 0)</strong><br>",
-      "<strong>Observed:</strong> ", special_ll$TOT_P_2021
+      "<strong>Observed:</strong> ", special_ll[[census_grid_value_col]]
     ),
     htmltools::HTML
   )
@@ -1537,24 +1555,27 @@ tryCatch({
   
   # Read spatial focus object
   censusgrid <- readRDS(censusgrid_rds_path)
-  
+
+  census_grid_value_col_resolved <- resolve_census_grid_value_col(censusgrid)
+  pop_reference_year_resolved <- sub("^TOT_P_", "", census_grid_value_col_resolved)
+
   class_intervals_censusgrid <- get_censusgrid_labels(censusgrid = censusgrid,
-                                                      census_grid_value_col = "TOT_P_2021",
+                                                      census_grid_value_col = census_grid_value_col_resolved,
                                                       max_classes = 8)
-  
+
   # Read spatial focus object
   evaluate_weighted_2021 <- readRDS(evaluate_weighted_rds_path)
-  
+
   # Read spatial focus object
   catchment_gpkg <- sf::st_read(catchment_gpkg_path,
                                 quiet = TRUE)
-  
+
   #3 mapping census grid population (control data) - map_censusgrid (control data - and ancillary data)
-  save_map_censusgrid_observed(census_grid_eval = evaluate_weighted_2021, 
+  save_map_censusgrid_observed(census_grid_eval = evaluate_weighted_2021,
                                class_intervals_censusgrid = class_intervals_censusgrid,
                                catchment = catchment_gpkg,
                                output_path = output_census_grid_map_html_path,
-                               census_grid_value_col = "TOT_P_2021")
+                               census_grid_value_col = census_grid_value_col_resolved)
   message("visualisation 3: Map created: census grid 2021")
   
   lau_value_col_focus <- paste0("POP_", 
@@ -1624,33 +1645,33 @@ tryCatch({
   message("visualisation 8: Map created: Estimated population for focus year")
   
   #7 mapping absolute difference between estimated and observed population for 2011
-  save_map_pop_errors_at_censusgrid(census_grid_eval = evaluate_weighted_2021, 
-                                    catchment = catchment_gpkg, 
-                                    pop_reference_year = "2021",
-                                    census_grid_value_col = "TOT_P_2021",
+  save_map_pop_errors_at_censusgrid(census_grid_eval = evaluate_weighted_2021,
+                                    catchment = catchment_gpkg,
+                                    pop_reference_year = pop_reference_year_resolved,
+                                    census_grid_value_col = census_grid_value_col_resolved,
                                     output_path = output_error_map_html_path)
   message("visualisation 9: Map created: Absolute errors (over- and underestimation of people)")
-  
+
   #8 mapping percentage difference between estimated and observed population for 2011
-  save_map_pop_BinaryPercErrors_at_censusgrid(census_grid_eval = evaluate_weighted_2021, 
-                                              catchment = catchment_gpkg, 
-                                              pop_reference_year = "2021",
-                                              thresholdval = thresholdval, #50 
-                                              census_grid_value_col = "TOT_P_2021",
+  save_map_pop_BinaryPercErrors_at_censusgrid(census_grid_eval = evaluate_weighted_2021,
+                                              catchment = catchment_gpkg,
+                                              pop_reference_year = pop_reference_year_resolved,
+                                              thresholdval = thresholdval, #50
+                                              census_grid_value_col = census_grid_value_col_resolved,
                                               thresholdvalfortruth = thresholdvalfortruth, #10
                                               output_path = output_binaryPercError_map_html_path)
   message("visualisation 10: Map created: Smaller vs. larger percentage errors")
- 
+
   #print(names(evaluate_weighted_2021))
   #print(evaluate_weighted_2021$dif1)
   #print(sum(evaluate_weighted_2021$pop_est_cell1))
-  #print(sum(evaluate_weighted_2021$TOT_P_2021))
-  
+  #print(sum(evaluate_weighted_2021[[census_grid_value_col_resolved]]))
+
   #9 histogram over error distribution for each censusgrid-at-catchment population density class for weighted interpolation - histogram_errordist_[catchtype]_[reference_year]
-  save_histogram_errors_distributed_on_density_intervals(census_grid_eval = evaluate_weighted_2021, 
-                                                         class_intervals_censusgrid = class_intervals_censusgrid, 
-                                                         census_grid_value_col = "TOT_P_2021",
-                                                         output_path = output_histogram_errorsDistributedOnDensClasses_html_path)  
+  save_histogram_errors_distributed_on_density_intervals(census_grid_eval = evaluate_weighted_2021,
+                                                         class_intervals_censusgrid = class_intervals_censusgrid,
+                                                         census_grid_value_col = census_grid_value_col_resolved,
+                                                         output_path = output_histogram_errorsDistributedOnDensClasses_html_path)
   message("visualisation 11: Histogram created: Absolute error distribution distributed out on observed density classes")
   
   metrics_weighted <- readRDS(metrics_rds_path)
