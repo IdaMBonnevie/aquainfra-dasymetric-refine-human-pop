@@ -61,6 +61,29 @@
       "minOccurs": 1,
       "maxOccurs": 1,
       "keywords": []
+    },
+    "inputFile5_corUrbanValues_rds": {
+      "title": "Urban CORINE CLC codes (optional)",
+      "description": "Path to an .rds file containing a vector of CORINE CLC class codes classified as urban (codes 100-199). Only required when 'additional_candidate_classes_to_consider' is 'all_artificial_surface_classes'.",
+      "schema": {
+        "type": "object",
+        "contentMediaType": "application/x-rds"
+      },
+      "minOccurs": 0,
+      "maxOccurs": 1,
+      "keywords": []
+    },
+    "inputFile6_additionalCandidateClassesToConsider_rds": {
+      "title": "Additional candidate classes to consider (optional)",
+      "description": "Path to an .rds file containing one of 'all_artificial_surface_classes' (use only the other urban CORINE classes, from inputFile5_corUrbanValues_rds), 'all_other_classes' (use all other CORINE classes from the legend), or NA. If NA or not supplied, this additional-classes step is skipped entirely.",
+      "schema": {
+        "type": "object",
+        "contentMediaType": "application/x-rds",
+        "enum": ["all_artificial_surface_classes", "all_other_classes", "NA"]
+      },
+      "minOccurs": 0,
+      "maxOccurs": 1,
+      "keywords": []
     }
   },
   "outputs": {
@@ -76,9 +99,11 @@
   "example": {
     "inputs": {
       "inputFile1_censusgridSelected_rds": "censusgrid_catchment.rds",
-      "inputFile2_corineCLCcropped_rds": "corine2018_cropped.rds"
+      "inputFile2_corineCLCcropped_rds": "corine2018_cropped.rds",
       "inputFile3_corineYear_rds": "coryear2018.rds",
-      "inputFile4_clcLegend_rds": "clc_legend.rds"
+      "inputFile4_clcLegend_rds": "clc_legend.rds",
+      "inputFile5_corUrbanValues_rds": "cor_urban_values.rds",
+      "inputFile6_additionalCandidateClassesToConsider_rds": "additional_candidate_classes_to_consider.rds"
     }
   }
 }

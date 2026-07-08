@@ -17,10 +17,12 @@ options(scipen = 100, digits = 4)
 # --- 3. FUNCTION DEFINITION (Original Code) ---
 calculate_weighting <- function(census_grid_geom,
                                 cor_raster_geom,
-                                cor_name_raster_columnname, 
+                                cor_name_raster_columnname,
                                 cor_code_raster_columnname,
                                 clc_legend = clc_legend,
-                                census_grid_value_col = "TOT_P_2021") {
+                                census_grid_value_col = "TOT_P_2021",
+                                cor_urban_values = NULL,
+                                additional_candidate_classes_to_consider = NA) {
   
   # get census_grid as terra vector
   census_vect <- terra::vect(census_grid_geom)
@@ -144,61 +146,91 @@ calculate_weighting <- function(census_grid_geom,
   # mask out census
   census_masked_112_111 <- census_masked_111[!census_masked_111$GRD_ID %in% used_ids_112, ]
   
-  # THIRD: TREAT OTHER CATEGORIES
-  
-  # USE OTHER CORINE CLASSES: 
-  cor_values_other <- clc_legend$CODE_18[!clc_legend$CODE_18 %in% c(111, 112)]
+  # THIRD: TREAT OTHER CATEGORIES (optional)
+  # Only run when the caller opted in via additional_candidate_classes_to_consider
+  if (!is.na(additional_candidate_classes_to_consider)) {
 
-  cor_other_artificial <- terra::classify(
-    cor_raster_geom,
-    rcl = cbind(cor_values_other, cor_values_other),
-    others = NA
-  )
-  
-  # Create raster with census grid population masked to 
-  # only be with values for artificial surface CORINE categories
-  # (use max value if overlapping polygons within cell):
-  census_raster_other_draft <- terra::rasterize(census_masked_112_111, 
-                                                cor_other_artificial, 
-                                                field = census_grid_value_col, 
-                                                fun = "max") |> terra::mask(cor_other_artificial) # max value if overlaps
-  
-  # count number of cor_112 cells per polygon (feature)
-  counts_other <- terra::extract(
-    cor_other_artificial,
-    census_masked_112_111,
-    fun = function(x, ...) sum(!is.na(x)),
-    df = TRUE
-  )
-  census_masked_112_111$cell_other_count <- counts_other[,2]
-  
-  # Create raster with census grid population masked to 
-  # only be with values for artificial surface CORINE categories
-  # (use max value if overlapping polygons within cell):
-  census_raster_other_count_draft <- terra::rasterize(census_masked_112_111, 
-                                                      cor_other_artificial, 
-                                                      field = "cell_other_count", 
-                                                      fun = "max") |> terra::mask(cor_other_artificial) # max value if overlaps
-  
-  census_raster_other <- census_raster_other_draft / census_raster_other_count_draft
-  
-  # Reattach factor levels
-  levels(cor_other_artificial) <- clc_legend[, c(cor_code_raster_columnname, cor_name_raster_columnname)]
-  
-  # Average population per 100x100 m per CORINE urban category:
-  avg_other <- terra::zonal(census_raster_other, #_correctedF1, 
-                            cor_other_artificial, #cor_country_maskedF1, 
-                            fun = "mean",  
-                            na.rm = TRUE) # ignore NA values
-  
-  if ((exists("avg_111")) && (exists("avg_112"))) {
-    avg_pop_per_corineF1 <- rbind(avg_111, avg_112, avg_other)
-  } else if (exists("avg_111")) {
-    avg_pop_per_corineF1 <- rbind(avg_111, avg_other)
-  } else if (exists("avg_112")) {
-    avg_pop_per_corineF1 <- rbind(avg_112, avg_other)
+    if (additional_candidate_classes_to_consider == "all_artificial_surface_classes") {
+
+      if (is.null(cor_urban_values)) {
+        stop("cor_urban_values must be supplied when additional_candidate_classes_to_consider = 'all_artificial_surface_classes'", call. = FALSE)
+      }
+
+      # USE ONLY OTHER URBAN CORINE CLASSES:
+      cor_urban_values_other <- cor_urban_values[!cor_urban_values %in% c(111, 112)]
+
+      cor_other_artificial <- terra::classify(
+        cor_raster_geom,
+        rcl = cbind(cor_urban_values_other, cor_urban_values_other),
+        others = NA
+      )
+
+    } else if (additional_candidate_classes_to_consider == "all_other_classes") {
+
+      # USE OTHER CORINE CLASSES:
+      cor_values_other <- clc_legend$CODE_18[!clc_legend$CODE_18 %in% c(111, 112)]
+
+      cor_other_artificial <- terra::classify(
+        cor_raster_geom,
+        rcl = cbind(cor_values_other, cor_values_other),
+        others = NA
+      )
+
+    } else {
+      stop(
+        paste0(
+          "Invalid additional_candidate_classes_to_consider: ", additional_candidate_classes_to_consider,
+          ". Allowed values are 'all_artificial_surface_classes', 'all_other_classes', or NA."
+        ),
+        call. = FALSE
+      )
+    }
+
+    # Create raster with census grid population masked to
+    # only be with values for artificial surface CORINE categories
+    # (use max value if overlapping polygons within cell):
+    census_raster_other_draft <- terra::rasterize(census_masked_112_111,
+                                                  cor_other_artificial,
+                                                  field = census_grid_value_col,
+                                                  fun = "max") |> terra::mask(cor_other_artificial) # max value if overlaps
+
+    # count number of cor_112 cells per polygon (feature)
+    counts_other <- terra::extract(
+      cor_other_artificial,
+      census_masked_112_111,
+      fun = function(x, ...) sum(!is.na(x)),
+      df = TRUE
+    )
+    census_masked_112_111$cell_other_count <- counts_other[,2]
+
+    # Create raster with census grid population masked to
+    # only be with values for artificial surface CORINE categories
+    # (use max value if overlapping polygons within cell):
+    census_raster_other_count_draft <- terra::rasterize(census_masked_112_111,
+                                                        cor_other_artificial,
+                                                        field = "cell_other_count",
+                                                        fun = "max") |> terra::mask(cor_other_artificial) # max value if overlaps
+
+    census_raster_other <- census_raster_other_draft / census_raster_other_count_draft
+
+    # Reattach factor levels
+    levels(cor_other_artificial) <- clc_legend[, c(cor_code_raster_columnname, cor_name_raster_columnname)]
+
+    # Average population per 100x100 m per CORINE urban category:
+    avg_other <- terra::zonal(census_raster_other, #_correctedF1,
+                              cor_other_artificial, #cor_country_maskedF1,
+                              fun = "mean",
+                              na.rm = TRUE) # ignore NA values
   }
-  
+
+  # Combine whichever of avg_111 / avg_112 / avg_other were computed
+  avg_tables <- Filter(Negate(is.null), list(
+    if (exists("avg_111")) avg_111,
+    if (exists("avg_112")) avg_112,
+    if (exists("avg_other")) avg_other
+  ))
+  avg_pop_per_corineF1 <- do.call(rbind, avg_tables)
+
   avg_pop_per_corineF1 <- avg_pop_per_corineF1[!is.na(avg_pop_per_corineF1[[census_grid_value_col]]), ]
   
   # Summing the mean population density across all urban CORINE classes: 
@@ -240,8 +272,8 @@ calculate_weighting <- function(census_grid_geom,
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 5) {
-  stop("Usage: Rscript src/calculate_weighting.R <censusgrid_selected_rds_path> <corineCLC_cropped_rds_path> <corine_year_rds_path> <clc_legend_rds_path> <weight_table_rds_path>", call. = FALSE)
+if (length(args) != 7) {
+  stop("Usage: Rscript src/calculate_weighting.R <censusgrid_selected_rds_path> <corineCLC_cropped_rds_path> <corine_year_rds_path> <clc_legend_rds_path> <cor_urban_values_rds_path|NA> <additional_candidate_classes_to_consider_rds_path|NA> <weight_table_rds_path>", call. = FALSE)
 }
 
 censusgrid_selected_rds_path <- args[1]
@@ -262,7 +294,9 @@ if (!(corine_year == "2018")) {
 }
 
 clc_legend_rds_path <- args[4]
-weight_table_rds_path <- args[5]
+cor_urban_values_rds_path <- args[5]
+additional_candidate_classes_to_consider_rds_path <- args[6]
+weight_table_rds_path <- args[7]
 
 message("D2K Wrapper Started for corine CLC retrieval.")
 
@@ -277,13 +311,28 @@ tryCatch({
 
   clc_legend <- readRDS(clc_legend_rds_path)
 
+  # Optional inputs: "NA" signals the input was not supplied
+  cor_urban_values <- if (identical(cor_urban_values_rds_path, "NA")) {
+    NULL
+  } else {
+    readRDS(cor_urban_values_rds_path)
+  }
+
+  additional_candidate_classes_to_consider <- if (identical(additional_candidate_classes_to_consider_rds_path, "NA")) {
+    NA
+  } else {
+    readRDS(additional_candidate_classes_to_consider_rds_path)
+  }
+
   # calculate weighting
   weight_table_final <- calculate_weighting(census_grid_geom = census_grid,
                                             cor_raster_geom = corine2018_cropped,
-                                            cor_name_raster_columnname = cor_name_raster_columnname, 
+                                            cor_name_raster_columnname = cor_name_raster_columnname,
                                             cor_code_raster_columnname = cor_code_raster_columnname,
                                             clc_legend = clc_legend,
-                                            census_grid_value_col = "TOT_P_2021")
+                                            census_grid_value_col = "TOT_P_2021",
+                                            cor_urban_values = cor_urban_values,
+                                            additional_candidate_classes_to_consider = additional_candidate_classes_to_consider)
 
   # Save as .rds for machine/subsequent steps
   saveRDS(weight_table_final, 
