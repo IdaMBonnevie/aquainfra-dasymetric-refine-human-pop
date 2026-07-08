@@ -47,6 +47,17 @@ calculate_weighting <- function(census_grid_geom,
     census_grid_value_col <- census_grid_value_col_fallback
   }
 
+  # Cells with no data (NA) and cells with a measured population of zero are
+  # semantically different — NA means the census grid doesn't cover this cell,
+  # zero means it was measured and genuinely nobody lives there (e.g. forest,
+  # farmland). Count them separately before filtering so we can report them
+  # separately rather than lumping "no data" together with "normal, uninhabited".
+  n_census_cells_na <- sum(is.na(census_vect[[census_grid_value_col]]))
+  n_census_cells_zero <- sum(
+    !is.na(census_vect[[census_grid_value_col]]) &
+      census_vect[[census_grid_value_col]] <= 0
+  )
+
   # Only keep cells with positive population — avoids diluting the density
   # calculation with zero/NA-population cells further down (zonal mean, etc.)
   census_vect <- census_vect[
@@ -65,9 +76,17 @@ calculate_weighting <- function(census_grid_geom,
       call. = FALSE
     )
   } else if (n_census_cells_valid < n_census_cells_total) {
+    exclusion_parts <- character(0)
+    if (n_census_cells_na > 0) {
+      exclusion_parts <- c(exclusion_parts, sprintf("%d with no data (NA)", n_census_cells_na))
+    }
+    if (n_census_cells_zero > 0) {
+      exclusion_parts <- c(exclusion_parts, sprintf("%d with a measured population of zero", n_census_cells_zero))
+    }
     message(sprintf(
-      "Note: %d of %d census grid cells in this catchment have no usable population data in '%s' (NA or <= 0) and are excluded from the weighting calculation. Proceeding with the remaining %d cell(s).",
-      n_census_cells_total - n_census_cells_valid, n_census_cells_total, census_grid_value_col, n_census_cells_valid
+      "Note: %d of %d census grid cells in this catchment are excluded from the weighting calculation using '%s' (%s). Proceeding with the remaining %d cell(s).",
+      n_census_cells_total - n_census_cells_valid, n_census_cells_total, census_grid_value_col,
+      paste(exclusion_parts, collapse = "; "), n_census_cells_valid
     ))
   }
 
