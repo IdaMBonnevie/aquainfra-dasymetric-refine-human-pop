@@ -77,13 +77,11 @@ class DasymetricRefinementProcessor(BaseProcessor):
             raise ProcessorExecuteError('Missing parameter "inputFile5_catchment_gpkg". Please provide a inputFile5_catchment_gpkg.')
         if in_inputFile6_weightTable_rds is None:
             raise ProcessorExecuteError('Missing parameter "inputFile6_weightTable_rds". Please provide a inputFile6_weightTable_rds.')
-        # Required by the R script's CLI contract for both refinement types, but the R
-        # function only reads/uses these when refinement_type is "weighted" — the
-        # "simple" branch never touches buildings or the threshold at all.
-        if in_inputFile7_buildings_rds is None:
-            raise ProcessorExecuteError('Missing parameter "inputFile7_buildings_rds". Please provide a inputFile7_buildings_rds.')
-        if in_inputFile8_buildingCountThreshold is None:
-            raise ProcessorExecuteError('Missing parameter "inputFile8_buildingCountThreshold". Please provide a inputFile8_buildingCountThreshold.')
+        # Optional. Only read/used by the R function when refinement_type is "weighted"
+        # and inputFile7_buildings_rds is supplied; "simple" never touches either.
+        # If inputFile7_buildings_rds is omitted, the building-count step is skipped
+        # entirely and inputFile8_buildingCountThreshold defaults to 1 (though it's
+        # only relevant when inputFile7_buildings_rds is provided).
 
         # Where to store output data
         refinement_rds_filename = 'refinement-%s.rds' % self.my_job_id
@@ -105,7 +103,7 @@ class DasymetricRefinementProcessor(BaseProcessor):
         # Assemble args for script (order must match the R script's commandArgs):
         # <refinement_type> <corineCLC_rds_path> <corine_year_rds_path> <lau_in_catchment_rds_path>
         # <pop_focus_year_rds_path> <catchment_gpkg_path> <weight_table_rds_path>
-        # <buildings_rds_path> <buildingCountThreshold>
+        # <buildings_rds_path|NA> <buildingCountThreshold|NA>
         # <output_refinement_rds_path> <output_refinement_tif_path> <output_cell_statistics_rds_path>
         # <output_corine_final_rds_path>
         script_args = [
@@ -116,8 +114,8 @@ class DasymetricRefinementProcessor(BaseProcessor):
             in_inputFile4_popFocusYear_rds,
             in_inputFile5_catchment_gpkg,
             in_inputFile6_weightTable_rds,
-            in_inputFile7_buildings_rds,
-            in_inputFile8_buildingCountThreshold,
+            in_inputFile7_buildings_rds if in_inputFile7_buildings_rds is not None else 'NA',
+            in_inputFile8_buildingCountThreshold if in_inputFile8_buildingCountThreshold is not None else 'NA',
             refinement_rds_filepath,
             refinement_tif_filepath,
             cell_statistics_filepath,

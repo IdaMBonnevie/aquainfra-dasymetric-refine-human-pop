@@ -6,7 +6,7 @@
     "en": "Dasymetric refinement of LAU population to raster cells"
   },
   "description": {
-    "en": "Performs dasymetric refinement of LAU (Local Administrative Unit) human population for a chosen focus year, redistributing population to finer CORINE Land Cover raster cells (approx. 1 km2) within a catchment. With refinement type 'weighted', population is distributed across urban CORINE classes according to the supplied weight table, further refined using EUBUCCO building footprints: raster cells whose building count exceeds a supplied fixed threshold are also treated as populated. With refinement type 'simple', a binary distribution restricted to urbanised CORINE classes 111 and 112 is used instead, and building footprints and the building count threshold are not used at all (R function 'dasymetric_refinement_raster')"
+    "en": "Performs dasymetric refinement of LAU (Local Administrative Unit) human population for a chosen focus year, redistributing population to finer CORINE Land Cover raster cells (approx. 1 km2) within a catchment. With refinement type 'weighted', population is distributed across urban CORINE classes according to the supplied weight table; if EUBUCCO building footprints are also supplied, raster cells whose building count exceeds a threshold (default 1) are additionally treated as populated. With refinement type 'simple', a binary distribution restricted to urbanised CORINE classes 111 and 112 is used instead, and building footprints and the building count threshold are not used at all (R function 'dasymetric_refinement_raster')"
   },
   "jobControlOptions": ["sync-execute", "async-execute"],
   "keywords": ["human population use case", "AquaINFRA", "dasymetric mapping", "CORINE", "LAU", "EUBUCCO", "buildings", "population refinement"],
@@ -20,7 +20,7 @@
   "inputs": {
     "refinement_type": {
       "title": "Refinement type",
-      "description": "The dasymetric refinement strategy to use. 'weighted' distributes population across urban CORINE classes according to the weight table, and additionally treats raster cells whose building count exceeds the supplied threshold as populated. 'simple' uses a binary distribution restricted to CORINE classes 111 and 112 only, with all weights set equal; building footprints and the building count threshold are ignored entirely in this mode.",
+      "description": "The dasymetric refinement strategy to use. 'weighted' distributes population across urban CORINE classes according to the weight table, and additionally treats raster cells whose building count exceeds the supplied threshold as populated when building footprints are supplied. 'simple' uses a binary distribution restricted to CORINE classes 111 and 112 only, with all weights set equal; building footprints and the building count threshold are ignored entirely in this mode.",
       "schema": {
         "type": "string",
         "enum": ["simple", "weighted"]
@@ -96,25 +96,25 @@
       "keywords": []
     },
     "inputFile7_buildings_rds": {
-      "title": "EUBUCCO building footprints",
-      "description": "Path to an .rds file containing EUBUCCO building footprints (sf object) for the catchment, with a 'construction_year' column. Only buildings constructed in or before the focus year (or with unknown construction year) are used. Still required as an input file regardless of refinement_type, but only actually read and used when refinement_type is 'weighted'; entirely ignored when refinement_type is 'simple'.",
+      "title": "EUBUCCO building footprints (optional)",
+      "description": "Path to an .rds file containing EUBUCCO building footprints (sf object) for the catchment, with a 'construction_year' column. Only buildings constructed in or before the focus year (or with unknown construction year) are used. Only read and used when refinement_type is 'weighted'; entirely ignored when refinement_type is 'simple'. If not supplied, the building-count step is skipped entirely and cells are determined by CORINE classes 111/112 alone.",
       "schema": {
         "type": "object",
         "contentMediaType": "application/x-rds"
       },
-      "minOccurs": 1,
+      "minOccurs": 0,
       "maxOccurs": 1,
       "keywords": []
     },
     "inputFile8_buildingCountThreshold": {
-      "title": "Building count threshold",
-      "description": "Single number: raster cells with a building count exceeding this threshold are treated as populated (in addition to CORINE classes 111/112). Only applied when refinement_type is 'weighted'; ignored when refinement_type is 'simple'.",
+      "title": "Building count threshold (optional)",
+      "description": "Single number: raster cells with a building count exceeding this threshold are treated as populated (in addition to CORINE classes 111/112). Only applied when refinement_type is 'weighted' and inputFile7_buildings_rds is supplied; ignored when refinement_type is 'simple' or no buildings are supplied. Defaults to 1 if not supplied (only relevant when inputFile7_buildings_rds is provided).",
       "schema": {
         "type": "integer",
         "minimum": 1,
         "maximum": 30
       },
-      "minOccurs": 1,
+      "minOccurs": 0,
       "maxOccurs": 1,
       "keywords": []
     }
@@ -146,7 +146,7 @@
     },
     "corine_final": {
       "title": "CORINE raster with buildings incorporated",
-      "description": "For 'weighted' refinement: the CORINE raster with classes 111/112 combined with additional cells whose building count passed the supplied threshold. For 'simple' refinement: the CORINE raster restricted to classes 111/112 only, with no building-derived cells added. Saved as .rds.",
+      "description": "For 'weighted' refinement: the CORINE raster with classes 111/112, combined with additional cells whose building count passed the supplied threshold if building footprints were supplied (otherwise classes 111/112 only). For 'simple' refinement: the CORINE raster restricted to classes 111/112 only, with no building-derived cells added. Saved as .rds.",
       "schema": {
         "type": "object",
         "contentMediaType": "application/x-rds"
