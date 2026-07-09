@@ -54,7 +54,7 @@ docker run -it --rm -v ./out:/out -e R_SCRIPT=get_ecrins_catchment.R d2k-toolbox
 
 
 ```bash
-docker run -it --rm -v ./out:/out -e R_SCRIPT=get_hydro90mL7_catchment.R d2k-toolbox "2070227550" "/out/catchment.gpkg" "/out/countries.rds"
+docker run -it --rm -v ./out:/out -e R_SCRIPT=get_hydrobasinsL7_catchment.R d2k-toolbox "2070227550" "/out/catchment.gpkg" "/out/countries.rds"
 ```
 
 ---

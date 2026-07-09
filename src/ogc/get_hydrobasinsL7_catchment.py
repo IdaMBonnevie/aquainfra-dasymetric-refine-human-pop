@@ -16,7 +16,7 @@ metadata_title_and_path = script_title_and_path.replace('.py', '.json')
 PROCESS_METADATA = json.load(open(metadata_title_and_path))
 
 
-class GetHydro90mL7CatchmentProcessor(BaseProcessor):
+class GetHydrobasinsL7CatchmentProcessor(BaseProcessor):
 
     def __init__(self, processor_def):
         super().__init__(processor_def, PROCESS_METADATA)
@@ -24,13 +24,13 @@ class GetHydro90mL7CatchmentProcessor(BaseProcessor):
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
         self.image_name = 'human-population-toolbox:20251201'
-        self.script_name = 'get_hydro90mL7_catchment.R'
+        self.script_name = 'get_hydrobasinsL7_catchment.R'
 
     def set_job_id(self, job_id: str):
         self.my_job_id = job_id
 
     def __repr__(self):
-        return f'<GetHydro90mL7CatchmentProcessor> {self.name}'
+        return f'<GetHydrobasinsL7CatchmentProcessor> {self.name}'
 
     def execute(self, data, outputs=None):
 
@@ -54,7 +54,8 @@ class GetHydro90mL7CatchmentProcessor(BaseProcessor):
             raise ProcessorExecuteError('Missing parameter "catchment_id". Please provide a catchment_id.')
         # Not validated against the full set of known HYBAS_IDs here (thousands of
         # entries) -- the R script itself validates catchment_id against its embedded
-        # catchmentL7_to_countries lookup and errors clearly if it's not a known ID.
+        # catchmentL7_to_countries lookup (restricted to catchments with EU territory)
+        # and errors clearly if it's not a known ID.
 
         # Where to store output data
         catchment_filename = 'catchment-%s.gpkg' % self.my_job_id

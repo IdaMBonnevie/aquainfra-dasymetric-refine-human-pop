@@ -1,15 +1,15 @@
 {
   "version": "0.1.0",
-  "id": "get-hydro90m-l7-catchment",
+  "id": "get-hydrobasins-l7-catchment",
   "use_case": "Human Population",
   "title": {
     "en": "Get HydroBASINS level 07 catchment (via Ramsar WFS)"
   },
   "description": {
-    "en": "Queries the Ramsar Sites Information Service (RSIS) WFS for a single HydroBASINS level 07 catchment by HYBAS_ID, fixes invalid geometries, reprojects to EPSG:3035, and looks up the list of countries that catchment overlaps from a fixed catchment-to-country mapping (R function 'get_hydro90mL7_catchment'). No bulk dataset download is required; only the requested catchment is fetched live from the WFS."
+    "en": "Queries the Ramsar Sites Information Service (RSIS) WFS for a single HydroBASINS (HydroSHEDS) level 07 catchment by HYBAS_ID, fixes invalid geometries, reprojects to EPSG:3035, and looks up the list of EU countries that catchment overlaps from a fixed catchment-to-country mapping (R function 'get_hydrobasinsL7_catchment'). Only catchments with at least some EU territory are available; no bulk dataset download is required, only the requested catchment is fetched live from the WFS."
   },
   "jobControlOptions": ["sync-execute", "async-execute"],
-  "keywords": ["human population use case", "AquaINFRA", "HydroBASINS", "Hydrography90m", "catchment", "river basin", "Ramsar"],
+  "keywords": ["human population use case", "AquaINFRA", "HydroBASINS", "HydroSHEDS", "catchment", "river basin", "Ramsar", "EU"],
   "links": [{
     "type": "text/html",
     "rel": "about",
@@ -20,7 +20,7 @@
   "inputs": {
     "catchment_id": {
       "title": "Catchment ID",
-      "description": "The HydroBASINS level 07 HYBAS_ID to retrieve (10-digit Pfafstetter-based identifier, e.g. 2070104700). Must be one of the known level 07 catchment IDs.",
+      "description": "The HydroBASINS level 07 HYBAS_ID to retrieve (10-digit Pfafstetter-based identifier, e.g. 2070104700). Must be one of the known level 07 catchment IDs with at least some EU territory; catchments entirely outside the EU are not available.",
       "schema": {
         "type": "string"
       },
@@ -40,7 +40,7 @@
     },
     "countries": {
       "title": "Countries for catchment",
-      "description": "The list of country codes that the requested catchment overlaps, looked up from a fixed catchment-to-country mapping.",
+      "description": "The list of EU country codes that the requested catchment overlaps, looked up from a fixed catchment-to-country mapping. Non-EU countries the catchment may also overlap are excluded.",
       "schema": {
         "type": "object",
         "contentMediaType": "application/x-rds"
