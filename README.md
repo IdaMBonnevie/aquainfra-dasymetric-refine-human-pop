@@ -159,18 +159,18 @@ docker run -it --rm -v ./out:/out -e R_SCRIPT=data_intersect.R d2k-toolbox "/out
 
 ---
 
-### Step 7: Calculate Weighting: Using only artificial surface CLC classes (recommended if buildings are used in step 9)
+### Step 7: Calculate Weighting: Using all potential CLC classes (recommended if buildings are used in step 9)
 
 ```bash
-docker run -it --rm -v ./out:/out -e R_SCRIPT=calculate_weighting.R d2k-toolbox "/out/censusgrid_covering_lau.rds" "/out/corine2018_cropped.rds" "/out/coryear2018.rds" "/out/clc_legend.rds" "/out/urban_values.rds" "all_artificial_surface_classes"  "/out/weight_table_final.rds"
+docker run -it --rm -v ./out:/out -e R_SCRIPT=calculate_weighting.R d2k-toolbox "/out/censusgrid_covering_lau.rds" "/out/corine2018_cropped.rds" "/out/coryear2018.rds" "/out/clc_legend.rds" "NA" "all_other_classes"  "/out/weight_table_final.rds"
 ```
 
 ---
 
-### OR Step 7: Calculate Weighting: Using all potential CLC classes (recommended if buildings are used in step 9)
+### OR Step 7: Calculate Weighting: Using only artificial surface CLC classes (recommended if buildings are used in step 9)
 
 ```bash
-docker run -it --rm -v ./out:/out -e R_SCRIPT=calculate_weighting.R d2k-toolbox "/out/censusgrid_covering_lau.rds" "/out/corine2018_cropped.rds" "/out/coryear2018.rds" "/out/clc_legend.rds" "NA" "all_other_classes"  "/out/weight_table_final.rds"
+docker run -it --rm -v ./out:/out -e R_SCRIPT=calculate_weighting.R d2k-toolbox "/out/censusgrid_covering_lau.rds" "/out/corine2018_cropped.rds" "/out/coryear2018.rds" "/out/clc_legend.rds" "/out/urban_values.rds" "all_artificial_surface_classes"  "/out/weight_table_final.rds"
 ```
 
 ---
