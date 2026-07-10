@@ -673,12 +673,18 @@ save_map_pop_estimated <- function(est_pop_raster,
   )
     
   breaks_clean <- sort(unique(class_intervals$brks))
-  
+
   if (length(breaks_clean) < 2) {
     warning("Could not create class breaks.")
     return(invisible(NULL))
   }
-    
+
+  # Extend the top break to Inf — reprojecting the raster for display
+  # (terra::project() below) can nudge the true maximum a hair above its
+  # original value via float32 drift in GDAL's warp, which would otherwise
+  # push those cells outside the color scale and render them as NA/transparent.
+  breaks_clean[length(breaks_clean)] <- Inf
+
   n_classes <- length(breaks_clean) - 1
   
   final_colors <- RColorBrewer::brewer.pal(
