@@ -367,7 +367,10 @@ save_map_censusgrid_observed <- function(
   tmap_mode("view")
   
   # Main map
-  map_main <-
+  # popup.vars is deprecated in favor of popup = tm_popup(...), but tm_popup()
+  # isn't actually exported by the currently pinned tmap version yet, so the
+  # migration isn't possible — suppress the unactionable notice instead.
+  map_main <- suppressMessages(
     tm_shape(census_grid_eval_ll) +
     tm_polygons(
       fill = census_grid_value_col,
@@ -386,6 +389,7 @@ save_map_censusgrid_observed <- function(
       )
     ) +
     tm_basemap("CartoDB.Positron")
+  )
   
   # Catchment boundary
   if (!is.null(catchment_ll)) {
@@ -445,20 +449,25 @@ save_map_lau_observed <- function(
   }
   
   # Quantile breaks
-  class_intervals <- classInt::classIntervals(
+  # Suppressed: classInt warns even when n legitimately equals the number of
+  # unique values (small catchments can have very few distinct LAU densities),
+  # which just means each value becomes its own class — expected, not an error.
+  class_intervals <- suppressWarnings(classInt::classIntervals(
     observed_values_no_zero,
-    n = 8,
+    n = min(8, length(unique(observed_values_no_zero))),
     style = "quantile"
-  )
-  
+  ))
+
   breaks_clean <- sort(unique(class_intervals$brks))
-  
+
   if (length(breaks_clean) < 2) {
     message("Insufficient unique class breaks")
     return(invisible(NULL))
   }
-  
-  # Ensure all values are covered
+
+  # Ensure all values are covered, including reprojection float drift on
+  # either edge (see save_map_pop_estimated for the same issue on the top break)
+  breaks_clean[1] <- -Inf
   breaks_clean[length(breaks_clean)] <- Inf
   
   n_classes <- length(breaks_clean) - 1
@@ -484,7 +493,10 @@ save_map_lau_observed <- function(
   tmap_mode("view")
   
   # Main map
-  map_main <-
+  # popup.vars is deprecated in favor of popup = tm_popup(...), but tm_popup()
+  # isn't actually exported by the currently pinned tmap version yet, so the
+  # migration isn't possible — suppress the unactionable notice instead.
+  map_main <- suppressMessages(
     tm_shape(lau_ll) +
     tm_polygons(
       fill = "pop_dens_1km2",
@@ -508,6 +520,7 @@ save_map_lau_observed <- function(
       )
     ) +
     tm_basemap("CartoDB.Positron")
+  )
   
   # Catchment outline
   if (!is.null(catchment_ll)) {
@@ -666,12 +679,16 @@ save_map_pop_estimated <- function(est_pop_raster,
   }
   
   # Create classes
-  class_intervals <- classInt::classIntervals(
+  # Suppressed: classInt warns even when n legitimately equals the number of
+  # unique values (small catchments can have very few distinct population
+  # values), which just means each value becomes its own class — expected,
+  # not an error.
+  class_intervals <- suppressWarnings(classInt::classIntervals(
     observed_values,
     n = min(8, length(unique(observed_values))),
     style = "quantile"
-  )
-    
+  ))
+
   breaks_clean <- sort(unique(class_intervals$brks))
 
   if (length(breaks_clean) < 2) {
