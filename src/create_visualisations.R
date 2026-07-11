@@ -342,7 +342,14 @@ save_map_censusgrid_observed <- function(
   if (length(class_intervals_censusgrid) < 2) {
     stop("class_intervals_censusgrid must contain at least two break values.")
   }
-  
+
+  # class_intervals_censusgrid is computed from the full census grid, a
+  # different (typically wider) set of cells than census_grid_eval being
+  # colored here — widen the outer edges so its values are never outside
+  # this scale's range.
+  class_intervals_censusgrid[1] <- -Inf
+  class_intervals_censusgrid[length(class_intervals_censusgrid)] <- Inf
+
   # Remove empty geometries
   census_grid_eval <-
     census_grid_eval[!sf::st_is_empty(census_grid_eval), ]
