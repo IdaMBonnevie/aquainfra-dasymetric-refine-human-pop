@@ -683,6 +683,9 @@ save_map_pop_estimated <- function(est_pop_raster,
   # (terra::project() below) can nudge the true maximum a hair above its
   # original value via float32 drift in GDAL's warp, which would otherwise
   # push those cells outside the color scale and render them as NA/transparent.
+  # The true max is kept only for the legend label, so it still reads e.g.
+  # "6.8 - 16.6" instead of "6.8 - Inf".
+  true_max <- max(breaks_clean)
   breaks_clean[length(breaks_clean)] <- Inf
 
   n_classes <- length(breaks_clean) - 1
@@ -750,7 +753,11 @@ save_map_pop_estimated <- function(est_pop_raster,
       values = observed_values,
       title = "People / 100 m²",
       opacity = 1,
-      position = "bottomright"
+      position = "bottomright",
+      labFormat = function(type, cuts, p) {
+        cuts[is.infinite(cuts)] <- true_max
+        paste(round(cuts[-length(cuts)], 1), round(cuts[-1], 1), sep = " - ")
+      }
     )
     
   # Title
