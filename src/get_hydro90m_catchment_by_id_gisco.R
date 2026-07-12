@@ -11,7 +11,7 @@
 
 # --- 1. DEPENDENCIES ---
 library(sf)
-library(httr2)
+library(httr)
 library(giscoR)
 
 # --- 2. GLOBAL SETTINGS ---
@@ -23,15 +23,17 @@ pygeoapi_base <- "https://aqua.igb-berlin.de/pygeoapi"
 ################################################################################
 
 call_pygeoapi_process <- function(process_id, inputs) {
-  req <- request(pygeoapi_base) |>
-    req_url_path_append("processes", process_id, "execution") |>
-    req_headers("Content-Type" = "application/json") |>
-    req_body_json(list(inputs = inputs)) |>
-    req_error(is_error = \(resp) FALSE)
+  url <- paste0(pygeoapi_base, "/processes/", process_id, "/execution")
 
-  resp <- req_perform(req)
-  if (resp_status(resp) >= 400) {
-    stop(resp_body_string(resp), call. = FALSE)
+  resp <- httr::POST(
+    url = url,
+    body = list(inputs = inputs),
+    encode = "json",
+    httr::content_type_json()
+  )
+
+  if (httr::status_code(resp) >= 400) {
+    stop(httr::content(resp, as = "text", encoding = "UTF-8"), call. = FALSE)
   }
   resp
 }
@@ -41,7 +43,7 @@ get_basin_polygon <- function(basin_id, target_crs = 3035) {
     basin_id = as.integer(basin_id),
     geometry_only = FALSE
   ))
-  geojson_text <- resp_body_string(resp)
+  geojson_text <- httr::content(resp, as = "text", encoding = "UTF-8")
   catchment_sf <- sf::st_read(geojson_text, quiet = TRUE)
 
   # Fix invalid geometries (only where needed)
