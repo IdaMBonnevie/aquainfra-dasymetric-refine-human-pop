@@ -22,7 +22,7 @@ class GetEubuccoBuildingsProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'human-population-toolbox:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'get_eubucco_buildings.R'
 
     def set_job_id(self, job_id: str):
