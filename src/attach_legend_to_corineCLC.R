@@ -7,6 +7,8 @@
 # --- 1. DEPENDENCIES ---
 library(terra)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -40,7 +42,7 @@ if (length(args) != 4) {
 }
 
 corine_year_rds_path <- args[1]
-corine_year <- readRDS(corine_year_rds_path)
+corine_year <- read_rds_input(corine_year_rds_path)
 corine_year <- as.character(corine_year)
 if (!(corine_year %in% c("2012", "2018"))) {
   stop(
@@ -68,7 +70,7 @@ message("D2K Wrapper Started for censusgrid retrieval.")
 tryCatch({
   
   # Read spatial focus object
-  corCLC <- readRDS(corineCLC_rds_path)
+  corCLC <- read_rds_input(corineCLC_rds_path)
   
   cor_code_raster_columnname <- paste0("CODE_", substr(corine_year, 3, 4)) # e.g. "CODE_18"
   cor_name_raster_columnname <- "LABEL"    

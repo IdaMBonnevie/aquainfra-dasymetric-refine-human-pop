@@ -8,6 +8,8 @@
 # --- 1. DEPENDENCIES ---
 library(sf)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -45,7 +47,7 @@ message("D2K Wrapper Started for intersection.")
 tryCatch({
   
   # Read spatial focus object
-  sf_focus_rds <- readRDS(focus_rds_path)
+  sf_focus_rds <- read_rds_input(focus_rds_path)
 
   analysis_extent <- sf::st_read(analysis_extent_gpkg_path,
                                  quiet = TRUE)

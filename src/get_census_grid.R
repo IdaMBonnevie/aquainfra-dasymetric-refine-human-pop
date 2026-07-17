@@ -10,6 +10,8 @@
 library(arrow)
 library(sf)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -74,7 +76,7 @@ message("D2K Wrapper Started for censusgrid retrieval.")
 
 tryCatch({
   
-  countries_for_catchment <- readRDS(countries_rds_path)
+  countries_for_catchment <- read_rds_input(countries_rds_path)
   
   censusgrid <- get_census_grid(countries_for_catchment = countries_for_catchment)
   

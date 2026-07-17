@@ -11,6 +11,8 @@ library(terra)
 library(dplyr)
 library(rlang)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -381,7 +383,7 @@ censusgrid_selected_rds_path <- args[1]
 corineCLC_cropped_rds_path <- args[2]
 
 corine_year_rds_path <- args[3]
-corine_year <- readRDS(corine_year_rds_path)
+corine_year <- read_rds_input(corine_year_rds_path)
 corine_year <- as.character(corine_year)
 if (!(corine_year == "2018")) {
   stop(
@@ -403,20 +405,20 @@ message("D2K Wrapper Started for corine CLC retrieval.")
 
 tryCatch({
   
-  census_grid <- readRDS(censusgrid_selected_rds_path)
-  
-  corine2018_cropped <- readRDS(corineCLC_cropped_rds_path)
-  
-  cor_name_raster_columnname <- "LABEL"    
+  census_grid <- read_rds_input(censusgrid_selected_rds_path)
+
+  corine2018_cropped <- read_rds_input(corineCLC_cropped_rds_path)
+
+  cor_name_raster_columnname <- "LABEL"
   cor_code_raster_columnname <- paste0("CODE_", substr(corine_year, 3, 4)) # e.g. "CODE_18"
 
-  clc_legend <- readRDS(clc_legend_rds_path)
+  clc_legend <- read_rds_input(clc_legend_rds_path)
 
   # Optional inputs: "NA" signals the input was not supplied
   cor_urban_values <- if (identical(cor_urban_values_rds_path, "NA")) {
     NULL
   } else {
-    readRDS(cor_urban_values_rds_path)
+    read_rds_input(cor_urban_values_rds_path)
   }
 
   additional_candidate_classes_to_consider <- if (identical(additional_candidate_classes_to_consider_arg, "NA")) {

@@ -18,6 +18,8 @@ library(classInt)
 library(terra)
 library(tmap)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -1505,7 +1507,7 @@ if (length(args) != 29) {
 weight_table_rds_path <- args[1]
 clc_legend_rds_path <- args[2]
 coryear2018_rds_path <- args[3]
-corine_year <- readRDS(coryear2018_rds_path)
+corine_year <- read_rds_input(coryear2018_rds_path)
 corine_year <- as.character(corine_year)
 if (!(corine_year == "2018")) {
   stop(
@@ -1528,7 +1530,7 @@ catchment_gpkg_path <- args[9]
 output_census_grid_map_html_path <- args[10] # output 3
 
 pop_focus_year_rds_path <- args[11]
-focus_year <- readRDS(pop_focus_year_rds_path)
+focus_year <- read_rds_input(pop_focus_year_rds_path)
 focus_year <- as.character(focus_year)
 valid_years <- c(
   "2024", "2023", "2022", "2021",
@@ -1598,13 +1600,13 @@ message("D2K Wrapper Started for creating evaluation datasets.")
 tryCatch({
   
   # Read spatial focus object
-  weight_table_final <- readRDS(weight_table_rds_path)
+  weight_table_final <- read_rds_input(weight_table_rds_path)
   if (!"percent" %in% names(weight_table_final)) {
     stop("Column 'percent' is missing")
   }
   
   # Read spatial focus object
-  clc_legend <- readRDS(clc_legend_rds_path)
+  clc_legend <- read_rds_input(clc_legend_rds_path)
   
   cor_code_raster_columnname <- paste0("CODE_", 
                                        substr(corine_year, 
@@ -1619,7 +1621,7 @@ tryCatch({
   message("visualisation 1: Histogram created: input weight")
   
   # Read spatial focus object
-  cell_counts <- readRDS(cell_statistics_rds_path)
+  cell_counts <- read_rds_input(cell_statistics_rds_path)
   
   #2 histogram of number of LAU containing each urban CORINE class - lau_number
   save_cor_distribution_in_lau_histogram(cell_counts = cell_counts,
@@ -1629,7 +1631,7 @@ tryCatch({
   message("visualisation 2: Histogram created: Corine CLC class area distribution")
   
   # Read spatial focus object
-  censusgrid <- readRDS(censusgrid_rds_path)
+  censusgrid <- read_rds_input(censusgrid_rds_path)
 
   census_grid_value_col_resolved <- resolve_census_grid_value_col(censusgrid)
   pop_reference_year_resolved <- sub("^TOT_P_", "", census_grid_value_col_resolved)
@@ -1639,7 +1641,7 @@ tryCatch({
                                                       max_classes = 8)
 
   # Read spatial focus object
-  evaluate_weighted_2021 <- readRDS(evaluate_weighted_rds_path)
+  evaluate_weighted_2021 <- read_rds_input(evaluate_weighted_rds_path)
 
   # Read spatial focus object
   catchment_gpkg <- sf::st_read(catchment_gpkg_path,
@@ -1656,7 +1658,7 @@ tryCatch({
   lau_value_col_focus <- paste0("POP_", 
                                 focus_year) 
   
-  lau_in_catch_focus <- readRDS(lau_in_catch_focus_rds_path)
+  lau_in_catch_focus <- read_rds_input(lau_in_catch_focus_rds_path)
   lau_in_catch_focus <- sf::st_make_valid(lau_in_catch_focus)
   lau_in_catch_focus <- sf::st_cast(lau_in_catch_focus, "MULTIPOLYGON", warn = FALSE)
   
@@ -1669,7 +1671,7 @@ tryCatch({
                         output_path = output_lau_in_catch_focus_map_html_path) 
   message("visualisation 4: Map created: Observed LAU for focus year")
   
-  lau_in_catch_reference <- readRDS(lau_in_catch_reference_rds_path)
+  lau_in_catch_reference <- read_rds_input(lau_in_catch_reference_rds_path)
   lau_in_catch_reference <- sf::st_make_valid(lau_in_catch_reference)
   lau_in_catch_reference <- sf::st_cast(lau_in_catch_reference, "MULTIPOLYGON", warn = FALSE)
   
@@ -1682,7 +1684,7 @@ tryCatch({
                    output_path = output_lau_in_catch_reference_map_html_path)
   message("visualisation 5: Map created: Observed LAU for reference year 2021")
   
-  corineCLC_valid <- readRDS(corineCLC_valid_rds_path)
+  corineCLC_valid <- read_rds_input(corineCLC_valid_rds_path)
   corineCLC_valid <- terra::unwrap(corineCLC_valid)
   
   cor_name_raster_columnname <- "LABEL"    
@@ -1697,7 +1699,7 @@ tryCatch({
                         output_path = output_corineCLC_valid_map_html_path)
   message("visualisation 6: Map Created: Corine CLC 2018 cells applied in the refinement")
   
-  corineCLC_all_overlapping_positive_censusgrid <- readRDS(corineCLC_only_potisive_rds_path)
+  corineCLC_all_overlapping_positive_censusgrid <- read_rds_input(corineCLC_only_potisive_rds_path)
   corineCLC_all_overlapping_positive_censusgrid <- terra::unwrap(corineCLC_all_overlapping_positive_censusgrid)
   
   #5B mapping populated corine raster for corine year - map_CLC[year]
@@ -1710,7 +1712,7 @@ tryCatch({
                         output_path = output_corineCLCoverlappingPosCensusgrid_map_html_path)
   message("visualisation 7: Map created: Corine CLC 2018 cells overlapping populated censusgrid 2021")
   
-  refinement_focus <- readRDS(refinement_rds_path)
+  refinement_focus <- read_rds_input(refinement_rds_path)
 
   #6 mapping estimated population at corine level for focus year 
   save_map_pop_estimated(est_pop_raster = refinement_focus, 
@@ -1749,9 +1751,9 @@ tryCatch({
                                                          output_path = output_histogram_errorsDistributedOnDensClasses_html_path)
   message("visualisation 11: Histogram created: Absolute error distribution distributed out on observed density classes")
   
-  metrics_weighted <- readRDS(metrics_rds_path)
-  
-  metrics_simple <- readRDS(metrics_simple_rds_path)
+  metrics_weighted <- read_rds_input(metrics_rds_path)
+
+  metrics_simple <- read_rds_input(metrics_simple_rds_path)
   
   #10 histogram of error metrics - metrics_[metric]_[reference_year]_[catchtype]
   save_histogram_metrics_one_file(metrics_weighted = metrics_weighted, 

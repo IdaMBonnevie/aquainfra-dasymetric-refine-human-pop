@@ -8,6 +8,8 @@
 # --- 1. DEPENDENCIES ---
 library(giscoR)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -126,7 +128,7 @@ message(paste("D2K Wrapper Started. Output will be saved to:",
 
 tryCatch({
   
-  countries_for_catchment <- readRDS(countries_rds_path)
+  countries_for_catchment <- read_rds_input(countries_rds_path)
   
   LAU_focus <- get_lau_population(
     pop_focus_year = focus_year,

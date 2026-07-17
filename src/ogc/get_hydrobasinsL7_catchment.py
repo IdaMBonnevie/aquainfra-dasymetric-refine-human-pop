@@ -9,6 +9,16 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/get-hydrobasins-l7-catchment/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "catchment_id": "2070227550"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__

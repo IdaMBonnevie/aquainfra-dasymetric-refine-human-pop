@@ -14,6 +14,8 @@ library(terra)
 library(dplyr)
 library(sf)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -222,7 +224,7 @@ if (!(refinement_type %in% c("simple", "weighted"))) {
 
 corineCLC_rds_path <- args[2]
 corine_year_rds_path <- args[3]
-corine_year <- readRDS(corine_year_rds_path)
+corine_year <- read_rds_input(corine_year_rds_path)
 corine_year <- as.character(corine_year)
 if (!(corine_year == "2018")) {
   stop(
@@ -237,7 +239,7 @@ if (!(corine_year == "2018")) {
 
 lau_in_catchment_rds_path <- args[4]
 pop_focus_year_rds_path <- args[5]
-pop_focus_year <- readRDS(pop_focus_year_rds_path)
+pop_focus_year <- read_rds_input(pop_focus_year_rds_path)
 pop_focus_year <- as.character(pop_focus_year)
 
 catchment_gpkg_path <- args[6]
@@ -254,13 +256,13 @@ message("D2K Wrapper Started for dasymetric refinement.")
 tryCatch({
   
   # Read spatial focus object
-  corCLC <- readRDS(corineCLC_rds_path)
-  
-  cor_code_raster_columnname <- paste0("CODE_", 
-                                       substr(corine_year, 
+  corCLC <- read_rds_input(corineCLC_rds_path)
+
+  cor_code_raster_columnname <- paste0("CODE_",
+                                       substr(corine_year,
                                               3, 4)) # e.g. "CODE_18"
-  
-  weight_table_final <- readRDS(weight_table_rds_path)
+                                              
+  weight_table_final <- read_rds_input(weight_table_rds_path)
   
   # if simple refinement all weights should be equal 
   # and only class 111 and 112 are accepted
@@ -271,7 +273,7 @@ tryCatch({
     ]
   }
   
-  lau_in_catchment <- readRDS(lau_in_catchment_rds_path)
+  lau_in_catchment <- read_rds_input(lau_in_catchment_rds_path)
 
   if (nrow(lau_in_catchment) == 0) {
     stop(
@@ -294,7 +296,7 @@ tryCatch({
   buildings_vect <- if (identical(buildings_rds_path, "NA")) {
     NULL
   } else {
-    readRDS(buildings_rds_path)
+    read_rds_input(buildings_rds_path)
   }
 
   building_count_threshold <- if (identical(building_count_threshold_arg, "NA")) {

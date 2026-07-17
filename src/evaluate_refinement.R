@@ -14,6 +14,8 @@ library(Metrics)
 library(dplyr)
 library(sf)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -235,15 +237,15 @@ message("D2K Wrapper Started for creating evaluation datasets.")
 tryCatch({
   
   # Read spatial focus object
-  refinement_weighted <- readRDS(refinement_weighted_reference_rds_path)
+  refinement_weighted <- read_rds_input(refinement_weighted_reference_rds_path)
   refinement_weighted <- terra::unwrap(refinement_weighted)
   
   # Read spatial focus object
-  refinement_simple <- readRDS(refinement_simple_reference_rds_path)
+  refinement_simple <- read_rds_input(refinement_simple_reference_rds_path)
   refinement_simple <- terra::unwrap(refinement_simple)
 
   # Read spatial focus object
-  census_grid <- readRDS(census_grid_rds_path)
+  census_grid <- read_rds_input(census_grid_rds_path)
 
   census_grid_value_col_resolved <- resolve_census_grid_value_col(census_grid)
   pop_reference_year_resolved <- sub("^TOT_P_", "", census_grid_value_col_resolved)
@@ -275,7 +277,7 @@ tryCatch({
           file = output_metrics_simple_rds_path)
 
   # Read spatial focus object
-  corineCLC <- readRDS(corineCLC_rds_path)
+  corineCLC <- read_rds_input(corineCLC_rds_path)
   
   corineCLC_overlapping_positive_pop <- get_only_corineCLC_overlapping_positive_pop(census_grid_geom = census_grid,
                                                                                      cor_rast_geom = corineCLC,

@@ -10,6 +10,8 @@
 # --- 1. DEPENDENCIES ---
 library(sf)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -32,10 +34,10 @@ message("D2K Wrapper Started to get analysis extent")
 tryCatch({
   
   # Read spatial focus object
-  lau_in_catchment_focus <- readRDS(lau_focus_selected_rds_path)
+  lau_in_catchment_focus <- read_rds_input(lau_focus_selected_rds_path)
   
   # Read spatial reference object
-  lau_in_catchment_reference <- readRDS(lau_reference_selected_rds_path)
+  lau_in_catchment_reference <- read_rds_input(lau_reference_selected_rds_path)
   
   # Get analysis extent 
   if (nrow(lau_in_catchment_focus) > 0) {

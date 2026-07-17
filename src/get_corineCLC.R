@@ -8,6 +8,8 @@
 # --- 1. DEPENDENCIES ---
 library(terra)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -22,7 +24,7 @@ if (length(args) != 3) {
 }
 
 focus_year_rds_path <- args[1]
-focus_year <- readRDS(focus_year_rds_path)
+focus_year <- read_rds_input(focus_year_rds_path)
 focus_year <- as.character(focus_year)
 valid_years <- c(
   "2024", "2023", "2022", "2021",
