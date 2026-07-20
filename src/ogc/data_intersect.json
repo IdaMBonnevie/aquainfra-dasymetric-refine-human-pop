@@ -1,0 +1,61 @@
+{
+  "version": "0.1.0",
+  "id": "data-intersect",
+  "use_case": "Human Population",
+  "title": {
+    "en": "Intersect data with spatial analysis extent"
+  },
+  "description": {
+    "en": "Calculates a spatial intersection between an input dataset (e.g. LAU polygons, census grid) and a spatial analysis extent (e.g. a catchment boundary), keeping only the features that intersect the extent. Reprojects the input to match the extent's CRS if needed (R function 'intersect_with_analysis_extent')"
+  },
+  "jobControlOptions": ["sync-execute", "async-execute"],
+  "keywords": ["human population use case", "AquaINFRA", "spatial intersection", "catchment", "LAU", "census grid"],
+  "links": [{
+    "type": "text/html",
+    "rel": "about",
+    "title": "information",
+    "href": "https://example.org/process",
+    "hreflang": "en-US"
+  }],
+  "inputs": {
+    "inputFile1_focus_rds": {
+      "title": "Focus dataset",
+      "description": "Path to an .rds file containing the spatial dataset (sf object, e.g. LAU polygons or census grid) to be intersected with the analysis extent.",
+      "schema": {
+        "type": "object",
+        "contentMediaType": "application/x-rds"
+      },
+      "minOccurs": 1,
+      "maxOccurs": 1,
+      "keywords": []
+    },
+    "inputFile2_analysisExtent_gpkg": {
+      "title": "Analysis spatial extent",
+      "description": "Path to a GeoPackage file containing the spatial extent geometry (e.g. catchment boundary) to intersect the focus dataset against.",
+      "schema": {
+        "type": "object",
+        "contentMediaType": "application/geopackage+sqlite3"
+      },
+      "minOccurs": 1,
+      "maxOccurs": 1,
+      "keywords": []
+    }
+  },
+  "outputs": {
+    "intersect_result": {
+      "title": "Intersection result",
+      "description": "The subset of the focus dataset's features that intersect the spatial analysis extent, reprojected to the extent's CRS if needed.",
+      "schema": {
+        "type": "object",
+        "contentMediaType": "application/x-rds"
+      }
+    }
+  },
+  "example": {
+    "inputs": {
+      "inputFile1_focus_rds": "lau_2018.rds",
+      "inputFile2_analysisExtent_gpkg ": "catchment.gpkg"	
+    }
+  }
+}
+

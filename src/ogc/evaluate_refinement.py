@@ -9,6 +9,19 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/evaluate-refinement/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_refinementWeightedReference_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/refinement_weighted_2021.rds",
+        "inputFile2_refinementSimpleReference_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/refinement_simple_2021.rds",
+        "inputFile3_censusgrid_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/censusgrid_catchment.rds",
+        "inputFile4_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/corine2018_cropped.rds"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -23,7 +36,7 @@ class EvaluateRefinementProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'human-population-toolbox:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'evaluate_refinement.R'
 
     def set_job_id(self, job_id: str):

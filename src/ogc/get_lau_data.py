@@ -9,6 +9,26 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/get-lau-data/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_countries_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/countries.rds",
+        "focus_year": "2018"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/get-lau-data/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_countries_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/countries.rds",
+        "focus_year": "2021"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -28,7 +48,7 @@ class GetLauDataProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'human-population-toolbox:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'get_lau_data.R'
 
     def set_job_id(self, job_id: str):
@@ -68,11 +88,11 @@ class GetLauDataProcessor(BaseProcessor):
             )
 
         # Where to store output data
-        lau_focus_filename = 'lau_focus-%s.rds' % self.my_job_id
+        lau_focus_filename = 'lau_focus-%s-%s.rds' % (in_focus_year, self.my_job_id)
         lau_focus_filepath = f'{output_dir}/{lau_focus_filename}'
         lau_focus_link = f'{output_url}/{lau_focus_filename}'
 
-        focusyear_filename = 'focusyear-%s.rds' % self.my_job_id
+        focusyear_filename = 'focusyear-%s-%s.rds' % (in_focus_year, self.my_job_id)
         focusyear_filepath = f'{output_dir}/{focusyear_filename}'
         focusyear_link = f'{output_url}/{focusyear_filename}'
 

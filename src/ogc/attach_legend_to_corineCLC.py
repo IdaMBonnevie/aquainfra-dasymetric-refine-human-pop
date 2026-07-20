@@ -9,6 +9,17 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.aquainfra-dasymetric-refinement-human-population.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/attach-legend-to-corineCLC/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile2_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/corine2018_cropped.rds"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -23,7 +34,7 @@ class AttachLegendToCorineCLCProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'aquainfra-dasymetric-refinement-human-population:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'attach_legend_to_corineCLC.R'
 
     def set_job_id(self, job_id: str):
@@ -75,7 +86,8 @@ class AttachLegendToCorineCLCProcessor(BaseProcessor):
             in_inputFile1_corineYear_rds,
             in_inputFile2_corineCLC_rds,
             cor_urban_values_filepath,
-            clc_legend_filepath
+            clc_legend_filepath,
+            corineCLC_filepath
         ]
 
         # Run docker container:

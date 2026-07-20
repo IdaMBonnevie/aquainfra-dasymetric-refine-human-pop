@@ -9,6 +9,17 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/get-analysis-extent/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_lauFocusSelected_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2018_catchment.rds",
+        "inputFile2_lauReferenceSelected_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2021_catchment.rds"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -23,7 +34,7 @@ class GetAnalysisExtentProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'human-population-toolbox:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'get_analysis_extent.R'
 
     def set_job_id(self, job_id: str):

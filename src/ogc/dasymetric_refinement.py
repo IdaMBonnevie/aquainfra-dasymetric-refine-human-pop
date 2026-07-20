@@ -9,6 +9,104 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "refinement_type": "weighted",
+        "inputFile1_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/corine2018_valid.rds",
+        "inputFile2_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile3_lauInCatchment_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2021_catchment.rds",
+        "inputFile4_popFocusYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/2021.rds",
+        "inputFile5_catchment_gpkg": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/catchment.gpkg",
+        "inputFile6_weightTable_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/weight_table_final.rds",
+        "inputFile7_buildings_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/buildings.rds",
+        "inputFile8_buildingCountThreshold": "5"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "refinement_type": "weighted",
+        "inputFile1_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/corine2018_valid.rds",
+        "inputFile2_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile3_lauInCatchment_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2021_catchment.rds",
+        "inputFile4_popFocusYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/2021.rds",
+        "inputFile5_catchment_gpkg": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/catchment.gpkg",
+        "inputFile6_weightTable_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/weight_table_final.rds",
+        "inputFile7_buildings_rds": "NA",
+        "inputFile8_buildingCountThreshold": "NA"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "refinement_type": "weighted",
+        "inputFile1_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/corine2018_valid.rds",
+        "inputFile2_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile3_lauInCatchment_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2018_catchment.rds",
+        "inputFile4_popFocusYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/2018.rds",
+        "inputFile5_catchment_gpkg": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/catchment.gpkg",
+        "inputFile6_weightTable_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/weight_table_final.rds",
+        "inputFile7_buildings_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/buildings.rds",
+        "inputFile8_buildingCountThreshold": "5"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "refinement_type": "weighted",
+        "inputFile1_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/corine2018_valid.rds",
+        "inputFile2_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile3_lauInCatchment_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2018_catchment.rds",
+        "inputFile4_popFocusYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/2018.rds",
+        "inputFile5_catchment_gpkg": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/catchment.gpkg",
+        "inputFile6_weightTable_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/weight_table_final.rds",
+        "inputFile7_buildings_rds": "NA",
+        "inputFile8_buildingCountThreshold": "NA"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "refinement_type": "simple",
+        "inputFile1_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/corine2018_valid.rds",
+        "inputFile2_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile3_lauInCatchment_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2021_catchment.rds",
+        "inputFile4_popFocusYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/2021.rds",
+        "inputFile5_catchment_gpkg": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/catchment.gpkg",
+        "inputFile6_weightTable_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/weight_table_final.rds",
+        "inputFile7_buildings_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/buildings.rds",
+        "inputFile8_buildingCountThreshold": "5"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "refinement_type": "simple",
+        "inputFile1_corineCLC_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/corine2018_valid.rds",
+        "inputFile2_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile3_lauInCatchment_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/lau_2018_catchment.rds",
+        "inputFile4_popFocusYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/2018.rds",
+        "inputFile5_catchment_gpkg": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/catchment.gpkg",
+        "inputFile6_weightTable_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/weight_table_final.rds",
+        "inputFile7_buildings_rds": "NA",
+        "inputFile8_buildingCountThreshold": "NA"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -23,7 +121,7 @@ class DasymetricRefinementProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'human-population-toolbox:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'dasymetric_refinement.R'
 
     def set_job_id(self, job_id: str):

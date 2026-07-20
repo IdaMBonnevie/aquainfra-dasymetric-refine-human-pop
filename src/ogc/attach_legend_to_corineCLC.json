@@ -42,7 +42,7 @@
     },
     "inputFile2_corineCLC_rds": {
       "title": "CORINE CLC raster",
-      "description": "Path to an .rds file containing the CORINE Land Cover raster (SpatRaster) to which the legend should be attached. This file is overwritten with the labeled raster.",
+      "description": "Path to an .rds file containing the CORINE Land Cover raster (SpatRaster) to which the legend should be attached.",
       "schema": {
         "type": "object",
         "contentMediaType": "application/x-rds"

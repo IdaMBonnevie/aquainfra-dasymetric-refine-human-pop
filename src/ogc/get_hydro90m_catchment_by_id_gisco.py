@@ -9,6 +9,16 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/get-hydro90m-catchment-by-id-gisco/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "basin_id": "1288419"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -23,7 +33,7 @@ class GetHydro90mCatchmentByIdGiscoProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'human-population-toolbox:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'get_hydro90m_catchment_by_id_gisco.R'
 
     def set_job_id(self, job_id: str):

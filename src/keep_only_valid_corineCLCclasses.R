@@ -9,6 +9,8 @@
 # --- 1. DEPENDENCIES ---
 library(terra)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -38,7 +40,7 @@ if (length(args) != 4) {
 
 corineCLC_rds_path <- args[1]
 corine_year_rds_path <- args[2]
-corine_year <- readRDS(corine_year_rds_path)
+corine_year <- read_rds_input(corine_year_rds_path)
 corine_year <- as.character(corine_year)
 if (!(corine_year == "2018")) {
   stop(
@@ -59,13 +61,13 @@ message("D2K Wrapper Started for selecting only urbanised Corine CLC classes val
 tryCatch({
   
   # Read spatial focus object
-  corCLC <- readRDS(corineCLC_rds_path)
+  corCLC <- read_rds_input(corineCLC_rds_path)
 
   cor_code_raster_columnname <- paste0("CODE_", 
                                        substr(corine_year, 
                                               3, 4)) # e.g. "CODE_18"
   
-  weight_table_final <- readRDS(weight_table_rds_path)
+  weight_table_final <- read_rds_input(weight_table_rds_path)
   
   corineCLC_valid <- get_only_valid_corine_categories_raster(cor_rast_crop = corCLC, 
                                                              cor_code_raster_columnname = cor_code_raster_columnname,

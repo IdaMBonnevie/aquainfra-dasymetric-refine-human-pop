@@ -8,6 +8,8 @@
 library(terra)
 library(sf)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -49,7 +51,7 @@ message("D2K Wrapper Started for cropping Corine CLC raster to input spatial ana
 tryCatch({
   
   # Read spatial focus object
-  corCLC <- readRDS(corineCLC_rds_path)
+  corCLC <- read_rds_input(corineCLC_rds_path)
   
   # Read spatial focus object
   analysis_extent <- sf::st_read(analysis_extent_gpkg_path,

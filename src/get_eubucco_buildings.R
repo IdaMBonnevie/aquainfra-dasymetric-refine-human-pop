@@ -14,6 +14,8 @@ library(sf)
 library(dplyr)
 library(giscoR)
 
+source("src/utils_io.R")
+
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
@@ -184,7 +186,7 @@ tryCatch({
   
   catchment <- sf::st_read(catchment_gpkg_path, quiet = TRUE)
   
-  countries_for_catchment <- readRDS(countries_rds_path)
+  countries_for_catchment <- read_rds_input(countries_rds_path)
   
   eubucco_buildings <- get_eubucco_buildings(catchment = catchment,
                                              countries_for_catchment = countries_for_catchment)

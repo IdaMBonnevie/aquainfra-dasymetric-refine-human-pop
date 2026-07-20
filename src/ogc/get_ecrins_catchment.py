@@ -9,6 +9,16 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/get-ecrins-catchment/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "catchment_id": "115"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -23,7 +33,7 @@ class GetEcrinsCatchmentProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'human-population-toolbox:20251201'
+        self.image_name = 'dasymetric-population-mapping-image'
         self.script_name = 'get_ecrins_catchment.R'
 
     def set_job_id(self, job_id: str):
