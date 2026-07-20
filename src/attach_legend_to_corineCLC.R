@@ -37,8 +37,8 @@ get_raster_for_geometry <- function(raster_object,
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 4) {
-  stop("Usage: Rscript src/attach_legend_to_corineCLC.R <corine_year_rds_path> <corineCLC_rds_path> <cor_urban_values_rds_path> <clc_legend_rds_path>", call. = FALSE)
+if (length(args) != 5) {
+  stop("Usage: Rscript src/attach_legend_to_corineCLC.R <corine_year_rds_path> <corineCLC_rds_path> <cor_urban_values_rds_path> <clc_legend_rds_path> <output_corineCLC_rds_path>", call. = FALSE)
 }
 
 corine_year_rds_path <- args[1]
@@ -64,8 +64,9 @@ print(paste0("CODE_", substr(corine_year, 3, 4)))
 corineCLC_rds_path <- args[2]
 cor_urban_values_rds_path <- args[3]
 clc_legend_rds_path <- args[4]
+output_corineCLC_rds_path <- args[5]
 
-message("D2K Wrapper Started for censusgrid retrieval.")
+message("D2K Wrapper Started for attaching legend to Corine CLC raster.")
 
 tryCatch({
   
@@ -176,9 +177,9 @@ tryCatch({
   terra::coltab(corCLC) <- cbind(clc_legend[[cor_code_raster_columnname]], cols)
   
   # Save as .rds for machine/subsequent steps
-  saveRDS(corCLC, 
-          file = corineCLC_rds_path)
-  
+  saveRDS(corCLC,
+          file = output_corineCLC_rds_path)
+
   #Find raster values where CODE_18 is between 100 and 199 #(inclusive lower, exclusive upper)
   cor_urban_values <- clc_legend[[cor_code_raster_columnname]][clc_legend[[cor_code_raster_columnname]] >= 100 & clc_legend[[cor_code_raster_columnname]] < 200]
 
@@ -190,8 +191,8 @@ tryCatch({
   saveRDS(clc_legend, 
           file = clc_legend_rds_path)
 
-    message(paste("D2K Wrapper Finished. CORINE CLC with legend saved to", 
-                corineCLC_rds_path))
+    message(paste("D2K Wrapper Finished. CORINE CLC with legend saved to",
+                output_corineCLC_rds_path))
   
 }, error = function(e) {
   stop(paste("Error during script execution:", e$message))
