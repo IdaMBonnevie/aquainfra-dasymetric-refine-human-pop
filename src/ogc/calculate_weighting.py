@@ -9,6 +9,47 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
+'''
+curl --location 'http://localhost:5000/processes/calculate-weighting/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_censusgridSelected_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/censusgrid_covering_lau.rds",
+        "inputFile2_corineCLCcropped_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/corine2018_cropped.rds",
+        "inputFile3_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile4_clcLegend_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/clc_legend.rds",
+        "inputFile5_corUrbanValues_rds": "NA",
+        "additional_candidate_classes_to_consider": "all_other_classes"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/calculate-weighting/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_censusgridSelected_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/censusgrid_covering_lau.rds",
+        "inputFile2_corineCLCcropped_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/corine2018_cropped.rds",
+        "inputFile3_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile4_clcLegend_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/clc_legend.rds",
+        "inputFile5_corUrbanValues_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/out/urban_values.rds",
+        "additional_candidate_classes_to_consider": "all_artificial_surface_classes"
+    }
+}'
+
+curl --location 'http://localhost:5000/processes/calculate-weighting/execution' \
+--header 'Content-Type: application/json' \
+--data '{ 
+    "inputs": {
+        "inputFile1_censusgridSelected_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/censusgrid_covering_lau.rds",
+        "inputFile2_corineCLCcropped_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/corine2018_cropped.rds",
+        "inputFile3_corineYear_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/coryear2018.rds",
+        "inputFile4_clcLegend_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/clc_legend.rds",
+        "inputFile5_corUrbanValues_rds": "NA",
+        "additional_candidate_classes_to_consider": "NA"
+    }
+}'
+'''
+
 LOGGER = logging.getLogger(__name__)
 
 script_title_and_path = __file__
@@ -49,8 +90,8 @@ class CalculateWeightingProcessor(BaseProcessor):
         # User inputs
         in_inputFile1_censusgridSelected_rds = data.get('inputFile1_censusgridSelected_rds')
         in_inputFile2_corineCLCcropped_rds = data.get('inputFile2_corineCLCcropped_rds')
-        in_inputFile3_corineYear_rds = data.get('inputFile4_corineYear_rds')
-        in_inputFile4_clcLegend_rds = data.get('inputFile5_clcLegend_rds')
+        in_inputFile3_corineYear_rds = data.get('inputFile3_corineYear_rds')
+        in_inputFile4_clcLegend_rds = data.get('inputFile4_clcLegend_rds')
         # Optional inputs
         in_inputFile5_corUrbanValues_rds = data.get('inputFile5_corUrbanValues_rds')
         in_additionalCandidateClassesToConsider = data.get('additional_candidate_classes_to_consider')
