@@ -23,6 +23,7 @@ curl -X POST https://${PYSERVER}/processes/calculate-weighting/execution \
     }
 }'
 
+# TESTED 2026-07-21
 curl -X POST https://${PYSERVER}/processes/calculate-weighting/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
@@ -36,6 +37,7 @@ curl -X POST https://${PYSERVER}/processes/calculate-weighting/execution \
     }
 }'
 
+# TESTED 2026-07-21
 curl -X POST https://${PYSERVER}/processes/calculate-weighting/execution \
 --header 'Content-Type: application/json' \
 --data '{ 

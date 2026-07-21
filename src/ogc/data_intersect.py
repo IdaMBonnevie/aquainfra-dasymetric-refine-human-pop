@@ -10,6 +10,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.aquainfra-dasymetric-refine-human-pop.src.ogc.docker_utils")
 
 '''
+# TESTED 2026-07-21
 curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
@@ -19,6 +20,7 @@ curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
     }
 }'
 
+# TESTED 2026-07-21
 curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
@@ -28,6 +30,7 @@ curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
     }
 }'
 
+# TESTED 2026-07-21
 curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
@@ -37,6 +40,7 @@ curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
     }
 }'
 
+# TESTED 2026-07-21
 curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
 --header 'Content-Type: application/json' \
 --data '{ 

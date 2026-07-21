@@ -10,8 +10,11 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.aquainfra-dasymetric-refine-human-pop.src.ogc.docker_utils")
 
 '''
-curl -X POST https://${PYSERVER}/processes/create-visualisations/execution \
+# TESTED 2026-07-21
+# Takes about 3 minutes
+curl -i -X POST https://${PYSERVER}/processes/create-visualisations/execution \
 --header 'Content-Type: application/json' \
+--header 'Prefer: respond-async' \
 --data '{
     "inputs": {
         "inputFile1_weightTable_rds": "https://raw.githubusercontent.com/MarkusKonk/aquainfra-dasymetric-refine-human-pop/refs/heads/main/outputs_example/weight_table_final.rds",
