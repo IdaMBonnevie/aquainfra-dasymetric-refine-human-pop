@@ -100,10 +100,12 @@ class CropAndMaskRasterProcessor(BaseProcessor):
 
         # Run docker container:
         returncode, stdout, stderr, user_err_msg = docker_utils.run_docker_container(
+            LOGGER,
             self.docker_executable,
             self.image_name,
             self.script_name,
             output_dir,
+            self.my_job_id,
             script_args
         )
 
