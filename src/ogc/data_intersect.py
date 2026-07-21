@@ -7,7 +7,7 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 
 # how to import python modules containing a hyphen:
 import importlib
-docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
+docker_utils = importlib.import_module("pygeoapi.process.aquainfra-dasymetric-refine-human-pop.src.ogc.docker_utils")
 
 '''
 curl -X POST https://${PYSERVER}/processes/data-intersect/execution \
