@@ -177,7 +177,7 @@ class CreateVisualisationsProcessor(BaseProcessor):
             self.image_name,
             self.script_name,
             output_dir,
-            selg.my_job_id,
+            self.my_job_id,
             script_args
         )
 

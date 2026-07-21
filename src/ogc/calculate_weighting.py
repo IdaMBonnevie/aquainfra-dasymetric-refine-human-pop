@@ -10,7 +10,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.aquainfra-dasymetric-refine-human-pop.src.ogc.docker_utils")
 
 '''
-curl -X POST https://${PYSERVER/processes/calculate-weighting/execution \
+curl -X POST https://${PYSERVER}/processes/calculate-weighting/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
