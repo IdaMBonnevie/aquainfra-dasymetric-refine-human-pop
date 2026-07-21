@@ -10,7 +10,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
 '''
-curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+curl -X POST https://${PYSERVER}/processes/dasymetric-refinement/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -26,7 +26,7 @@ curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution
     }
 }'
 
-curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+curl -X POST https://${PYSERVER}/processes/dasymetric-refinement/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -42,7 +42,7 @@ curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution
     }
 }'
 
-curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+curl -X POST https://${PYSERVER}/processes/dasymetric-refinement/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -58,7 +58,7 @@ curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution
     }
 }'
 
-curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+curl -X POST https://${PYSERVER}/processes/dasymetric-refinement/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -74,7 +74,7 @@ curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution
     }
 }'
 
-curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+curl -X POST https://${PYSERVER}/processes/dasymetric-refinement/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -90,7 +90,7 @@ curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution
     }
 }'
 
-curl --location 'http://localhost:5000/processes/dasymetric-refinement/execution' \
+curl -X POST https://${PYSERVER}/processes/dasymetric-refinement/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {

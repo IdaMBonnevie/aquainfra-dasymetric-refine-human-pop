@@ -10,7 +10,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
 '''
-curl --location 'http://localhost:5000/processes/crop-and-mask-raster/execution' \
+curl -X POST https://${PYSERVER}/processes/crop-and-mask-raster/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -19,7 +19,7 @@ curl --location 'http://localhost:5000/processes/crop-and-mask-raster/execution'
     }
 }'
 
-curl --location 'http://localhost:5000/processes/crop-and-mask-raster/execution' \
+curl -X POST https://${PYSERVER}/processes/crop-and-mask-raster/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -28,7 +28,7 @@ curl --location 'http://localhost:5000/processes/crop-and-mask-raster/execution'
     }
 }'
 
-curl --location 'http://localhost:5000/processes/crop-and-mask-raster/execution' \
+curl -X POST https://${PYSERVER}/processes/crop-and-mask-raster/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {

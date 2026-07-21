@@ -10,7 +10,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
 '''
-curl --location 'http://localhost:5000/processes/calculate-weighting/execution' \
+curl -X POST https://${PYSERVER/processes/calculate-weighting/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -23,7 +23,7 @@ curl --location 'http://localhost:5000/processes/calculate-weighting/execution' 
     }
 }'
 
-curl --location 'http://localhost:5000/processes/calculate-weighting/execution' \
+curl -X POST https://${PYSERVER}/processes/calculate-weighting/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
@@ -36,7 +36,7 @@ curl --location 'http://localhost:5000/processes/calculate-weighting/execution' 
     }
 }'
 
-curl --location 'http://localhost:5000/processes/calculate-weighting/execution' \
+curl -X POST https://${PYSERVER}/processes/calculate-weighting/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {

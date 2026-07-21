@@ -9,7 +9,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
 '''
-curl --location 'http://localhost:5000/processes/get-eubucco-buildings/execution' \
+curl -X POST https://${PYSERVER}/processes/get-eubucco-buildings/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {

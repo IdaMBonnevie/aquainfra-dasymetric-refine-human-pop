@@ -10,7 +10,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.human-population-toolbox.src.ogc.docker_utils")
 
 '''
-curl --location 'http://localhost:5000/processes/keep-only-valid-corineCLCclasses/execution' \
+curl -X POST https://${PYSERVER}/processes/keep-only-valid-corineCLCclasses/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {

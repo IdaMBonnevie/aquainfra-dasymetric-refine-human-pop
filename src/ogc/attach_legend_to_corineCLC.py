@@ -10,7 +10,7 @@ import importlib
 docker_utils = importlib.import_module("pygeoapi.process.aquainfra-dasymetric-refinement-human-population.src.ogc.docker_utils")
 
 '''
-curl --location 'http://localhost:5000/processes/attach-legend-to-corineCLC/execution' \
+curl -X POST https://${PYSERVER}/processes/attach-legend-to-corineCLC/execution \
 --header 'Content-Type: application/json' \
 --data '{ 
     "inputs": {
