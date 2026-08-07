@@ -3,7 +3,7 @@
 ````markdown
 aquainfra-dasymetric-refinement-human-population
 
-This repository provides an R-based **Dasymetric Mapping Toolbox** for an EU river catchment of own choice, implementing a full workflow using **EUROSTAT LAU**, **CLC CORINE**, and **Eurostat 2021 Census** data.
+This repository provides an R-based **Dasymetric Mapping Toolbox** for estimating human population density in an EU river catchment of own choice, implementing a full workflow using **EUROSTAT LAU**, **CLC CORINE**, and **Eurostat 2021 Census** data.
 It follows the **Data-to-Knowledge (D2K)** framework of the **AquaINFRA** project.
 ````
 ## 🚀 Launch in MyBinder (optional)
