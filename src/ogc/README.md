@@ -2,6 +2,26 @@
 
 This README is still work in progress.
 
+## How to update
+
+First, build the docker image. In pygeoapi, we use an image name with a date:
+
+```
+today=$(date '+%Y%m%d')
+docker build -t dasymetric-population-mapping:${today} .
+```
+
+Then, change the image name in each process python file (in `self.image_name = "..."`).
+For this, you can use the command:
+
+```
+find . -type f -name "*.py" -exec sed -i 's/self\.image_name = "dasymetric-population-mapping:20260925"/self.image_name = "dasymetric-population-mapping:20998877"/g' {} +
+
+```
+
+Then, reinstall pygeoapi (activate the virtualenv, re-install so that pygeoapi finds the
+changes, and restart pygeoapi).
+
 ## How to install pygeoapi
 
 ## How to deploy these processes
