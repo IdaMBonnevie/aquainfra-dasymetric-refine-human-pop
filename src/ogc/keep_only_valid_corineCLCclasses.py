@@ -36,7 +36,7 @@ class KeepOnlyValidCorineCLCclassesProcessor(BaseProcessor):
         self.supports_outputs = True
         self.process_id = self.metadata["id"]
         self.my_job_id = 'nothing-yet'
-        self.image_name = 'dasymetric-population-mapping-image'
+        self.image_name = "dasymetric-population-mapping:20260925"
         self.script_name = 'keep_only_valid_corineCLCclasses.R'
 
     def set_job_id(self, job_id: str):
