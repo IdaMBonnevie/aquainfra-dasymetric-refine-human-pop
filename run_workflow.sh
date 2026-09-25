@@ -54,7 +54,7 @@ docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=crop_and_mask_raster.R dasymetr
 
 # Step 6A: Attach Legend to CORINE CLC
 echo "--- Step 6A: Attach Legend to CORINE CLC ---"
-docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=attach_legend_to_corineCLC.R dasymetric-population-mapping-image "/out/coryear2018.rds" "/out/corine2018_cropped.rds" "/out/urban_values.rds" "/out/clc_legend.rds"
+docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=attach_legend_to_corineCLC.R dasymetric-population-mapping-image "/out/coryear2018.rds" "/out/corine2018_cropped.rds" "/out/urban_values.rds" "/out/clc_legend.rds" "/out/corine2018_cropped_with_legend.rds"
 
 # Step 6B: Data Intersect (Census Grid x Catchment)
 echo "--- Step 6B: Data Intersect (Census Grid x Catchment) ---"
