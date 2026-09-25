@@ -23,6 +23,11 @@ source("src/utils_io.R")
 # --- 2. GLOBAL SETTINGS ---
 options(scipen = 100, digits = 4)
 
+# Basemap for all interactive maps (tmap + leaflet). CARTO's
+# "CartoDB.Positron" tiles now require an API key and otherwise come back
+# stamped "API KEY REQUIRED", so use Esri's keyless light-grey canvas instead.
+basemap_provider <- "Esri.WorldGrayCanvas"
+
 # Prefer preferred_col; fall back to fallback_col if preferred_col has no
 # usable (positive) values for this catchment — e.g. Eurostat's 2021 census
 # grid doesn't cover the UK, but 2018 does.
@@ -397,7 +402,7 @@ save_map_censusgrid_observed <- function(
         title = "Population"
       )
     ) +
-    tm_basemap("CartoDB.Positron")
+    tm_basemap(basemap_provider)
   )
   
   # Catchment boundary
@@ -528,7 +533,7 @@ save_map_lau_observed <- function(
         )
       )
     ) +
-    tm_basemap("CartoDB.Positron")
+    tm_basemap(basemap_provider)
   )
   
   # Catchment outline
@@ -627,7 +632,7 @@ save_map_clc_observed <- function(cor_rast_geom,
         title = paste0(textstring, " CLC classes")
         )
       ) +
-    tm_basemap("CartoDB.Positron")
+    tm_basemap(basemap_provider)
 
   # Catchment overlay
   if (!is.null(catchment_ll)) {
@@ -779,7 +784,7 @@ save_map_pop_estimated <- function(est_pop_raster,
   # Build map
   map_widget <- leaflet::leaflet() |>
     leaflet::addProviderTiles(
-      leaflet::providers$CartoDB.Positron
+      basemap_provider
     ) |>
     leaflet::addRasterImage(
       est_pop_ll,
@@ -950,7 +955,7 @@ save_map_pop_errors_at_censusgrid <- function(
   
   # MAP
   map_widget <- leaflet::leaflet() |>
-    leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron)
+    leaflet::addProviderTiles(basemap_provider)
   
   # normal polygons
   map_widget <- map_widget |>
@@ -1151,7 +1156,7 @@ save_map_pop_BinaryPercErrors_at_censusgrid <- function(
   
   # MAP
   map_widget <- leaflet::leaflet() |>
-    leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron)
+    leaflet::addProviderTiles(basemap_provider)
   
   # NORMAL LAYER
   map_widget <- map_widget |>
