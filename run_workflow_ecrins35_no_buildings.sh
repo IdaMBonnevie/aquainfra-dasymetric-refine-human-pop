@@ -1,5 +1,8 @@
 #!/bin/bash
 # D2K Workflow Execution Script (macOS/Linux Compatible)
+# Variant: ECRINS catchment 35, urban CLC classes only, WITHOUT buildings.
+# Mirrors the Galaxy workflow "Elbe (Ecrins ID=35) human population refinement
+# (without buildings)": https://aqua.usegalaxy.eu/published/workflow?id=4276177d6eb9c68d
 # NOTE: This script assumes you have successfully built the image 'dasymetric-population-mapping-image'.
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -10,7 +13,7 @@ echo "--- Starting D2K Workflow ---"
 
 # Step 1: Get ECRINS Catchment
 echo "--- Step 1: Get ECRINS Catchment ---"
-docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=get_ecrins_catchment.R dasymetric-population-mapping-image "115" "/out/catchment.gpkg" "/out/countries.rds"
+docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=get_ecrins_catchment.R dasymetric-population-mapping-image "35" "/out/catchment.gpkg" "/out/countries.rds"
 
 # Step 2A: Get LAU Data (Focus Year 2018)
 echo "--- Step 2A: Get LAU Data (Focus Year 2018) ---"
@@ -23,10 +26,6 @@ docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=get_lau_data.R dasymetric-popul
 # Step 2C: Get Census Grid
 echo "--- Step 2C: Get Census Grid ---"
 docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=get_census_grid.R dasymetric-population-mapping-image "/out/countries.rds" "/out/censusgrid.rds"
-
-# Step 2D: Get EUBUCCO buildings
-echo "--- Step 2D: Get EUBUCCO buildings ---"
-docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=get_eubucco_buildings.R dasymetric-population-mapping-image "/out/catchment.gpkg" "/out/countries.rds" "/out/buildings.rds"
 
 # Step 3A: Data Intersect (LAU 2018 x Catchment)
 echo "--- Step 3A: Data Intersect (LAU 2018 x Catchment) ---"
@@ -60,25 +59,25 @@ docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=attach_legend_to_corineCLC.R da
 echo "--- Step 6B: Data Intersect (Census Grid x Catchment) ---"
 docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=data_intersect.R dasymetric-population-mapping-image "/out/censusgrid_covering_lau.rds" "/out/catchment.gpkg" "/out/censusgrid_catchment.rds"
 
-# Step 7: Calculate Weighting (using all other CLC classes, recommended since buildings are used in step 9)
+# Step 7: Calculate Weighting (urban CLC classes only, no additional candidate classes)
 echo "--- Step 7: Calculate Weighting ---"
-docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=calculate_weighting.R dasymetric-population-mapping-image "/out/censusgrid_covering_lau.rds" "/out/corine2018_cropped_with_legend.rds" "/out/coryear2018.rds" "/out/clc_legend.rds" "NA" "all_other_classes" "/out/weight_table_final.rds"
+docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=calculate_weighting.R dasymetric-population-mapping-image "/out/censusgrid_covering_lau.rds" "/out/corine2018_cropped_with_legend.rds" "/out/coryear2018.rds" "/out/clc_legend.rds" "NA" "NA" "/out/weight_table_final.rds"
 
 # Step 8: Keep Only Valid CORINE CLC Classes
 echo "--- Step 8: Keep Only Valid CORINE CLC Classes ---"
 docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=keep_only_valid_corineCLCclasses.R dasymetric-population-mapping-image "/out/corine2018_cropped.rds" "/out/coryear2018.rds" "/out/weight_table_final.rds" "/out/corine2018_valid.rds"
 
-# Step 9A: Dasymetric Refinement (Weighted, 2021) using buildings
+# Step 9A: Dasymetric Refinement (Weighted, 2021) without buildings
 echo "--- Step 9A: Dasymetric Refinement (Weighted, 2021) ---"
-docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=dasymetric_refinement.R dasymetric-population-mapping-image "weighted" "/out/corine2018_valid.rds" "/out/coryear2018.rds" "/out/lau_2021_catchment.rds" "/out/2021.rds" "/out/catchment.gpkg" "/out/weight_table_final.rds" "/out/buildings.rds" "5" "/out/refinement_weighted_2021.rds" "/out/refinement_weighted_2021.tif" "/out/lau_cell_counts_weighted2021.rds" "/out/corine2018_final.rds"
+docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=dasymetric_refinement.R dasymetric-population-mapping-image "weighted" "/out/corine2018_valid.rds" "/out/coryear2018.rds" "/out/lau_2021_catchment.rds" "/out/2021.rds" "/out/catchment.gpkg" "/out/weight_table_final.rds" "NA" "NA" "/out/refinement_weighted_2021.rds" "/out/refinement_weighted_2021.tif" "/out/lau_cell_counts_weighted2021.rds" "/out/corine2018_final.rds"
 
-# Step 9B: Dasymetric Refinement (Weighted, 2018) using buildings
+# Step 9B: Dasymetric Refinement (Weighted, 2018) without buildings
 echo "--- Step 9B: Dasymetric Refinement (Weighted, 2018) ---"
-docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=dasymetric_refinement.R dasymetric-population-mapping-image "weighted" "/out/corine2018_valid.rds" "/out/coryear2018.rds" "/out/lau_2018_catchment.rds" "/out/2018.rds" "/out/catchment.gpkg" "/out/weight_table_final.rds" "/out/buildings.rds" "5" "/out/refinement_weighted_2018.rds" "/out/refinement_weighted_2018.tif" "/out/lau_cell_counts_weighted2018.rds" "/out/corine2018_extra1.rds"
+docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=dasymetric_refinement.R dasymetric-population-mapping-image "weighted" "/out/corine2018_valid.rds" "/out/coryear2018.rds" "/out/lau_2018_catchment.rds" "/out/2018.rds" "/out/catchment.gpkg" "/out/weight_table_final.rds" "NA" "NA" "/out/refinement_weighted_2018.rds" "/out/refinement_weighted_2018.tif" "/out/lau_cell_counts_weighted2018.rds" "/out/corine2018_extra1.rds"
 
-# Step 9C: Dasymetric Refinement (Simple, 2021) using buildings
+# Step 9C: Dasymetric Refinement (Simple, 2021) without buildings
 echo "--- Step 9C: Dasymetric Refinement (Simple, 2021) ---"
-docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=dasymetric_refinement.R dasymetric-population-mapping-image "simple" "/out/corine2018_valid.rds" "/out/coryear2018.rds" "/out/lau_2021_catchment.rds" "/out/2021.rds" "/out/catchment.gpkg" "/out/weight_table_final.rds" "/out/buildings.rds" "5" "/out/refinement_simple_2021.rds" "/out/refinement_simple_2021.tif" "/out/lau_cell_counts_simple2021.rds" "/out/corine2018_extra2.rds"
+docker run -it --rm -v $OUT_DIR:/out -e R_SCRIPT=dasymetric_refinement.R dasymetric-population-mapping-image "simple" "/out/corine2018_valid.rds" "/out/coryear2018.rds" "/out/lau_2021_catchment.rds" "/out/2021.rds" "/out/catchment.gpkg" "/out/weight_table_final.rds" "NA" "NA" "/out/refinement_simple_2021.rds" "/out/refinement_simple_2021.tif" "/out/lau_cell_counts_simple2021.rds" "/out/corine2018_extra2.rds"
 
 # Step 10: Evaluate Refinement
 echo "--- Step 10: Evaluate Refinement ---"
