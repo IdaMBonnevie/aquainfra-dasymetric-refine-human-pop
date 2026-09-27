@@ -998,7 +998,7 @@ save_map_pop_errors_at_censusgrid <- function(
   
   numeric_labels <- paste0(
     format(head(breaks, -1), scientific = FALSE),
-    " – ",
+    " \u2013 ",
     format(tail(breaks, -1), scientific = FALSE)
   )
   
@@ -1084,7 +1084,7 @@ save_map_pop_BinaryPercErrors_at_censusgrid <- function(
   
   labels <- paste0(
     rounded_breaks[-length(rounded_breaks)],
-    "–",
+    "\u2013",
     rounded_breaks[-1]
   )
   
@@ -1242,7 +1242,7 @@ save_histogram_errors_distributed_on_density_intervals <- function(census_grid_e
   # create readable labels
   break_labels <- paste0(
     format(round(class_intervals_censusgrid[-length(class_intervals_censusgrid)]), big.mark = ","),
-    "–",
+    "\u2013",
     format(round(class_intervals_censusgrid[-1]), big.mark = ",")
   )
   
