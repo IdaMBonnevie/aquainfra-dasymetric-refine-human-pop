@@ -4,12 +4,14 @@
 # by using a dedicated ENTRYPOINT to receive arguments from the 'docker run' command.
 #
 # OPTIMIZATIONS APPLIED:
-# 1. Uses 'mamba' for faster Conda environment solving.
+# 1. Uses conda's libmamba solver for fast Conda environment solving.
 # 2. Installs 'eurostat' from CRAN to get the latest version and fix API errors.
 
 # 1. Start from a miniconda base image
 # Provides Python, Conda, and a Linux base environment to build on
-FROM continuumio/miniconda3:latest
+# Pinned: 'latest' moved to a new base on 2026-08-28, and the pinned conda
+# packages in environment.yml conflict with that base's libraries.
+FROM continuumio/miniconda3:26.5.3-1
 
 # 2. Set the working directory
 WORKDIR /app
@@ -22,14 +24,13 @@ COPY .binder/environment.yml /app/environment.yml
 # Ensures complex RUN commands (like chaining with &&) work reliably
 SHELL ["/bin/bash", "-c"]
 
-# 5. (OPTIMIZED) Install Mamba for faster environment solving
-# Installs Mamba, a faster alternative to Conda for dependency resolution
-RUN conda install -n base -c conda-forge mamba -y
-
-# 6. (OPTIMIZED) Create the Conda environment using Mamba
+# 5-6. Create the Conda environment
 # Installs all dependencies defined in environment.yml. This installs all packages *except* eurostat. Cleans cache to reduce image size.
-RUN mamba env update -n base -f /app/environment.yml -y && \
-    mamba clean --all -f -y
+# conda already uses the fast libmamba solver. Installing mamba separately first
+# broke the build: it pulls in libxml2-16, whose libxml2.so.16 is then deleted
+# when the base image's own libxml2 package is replaced in this step.
+RUN conda env update -n base -f /app/environment.yml && \
+    conda clean --all -f -y
 
 # 7a. (FIX) Install libgomp1, the OpenMP runtime R needs at runtime
 # The miniconda3 base image is a slim Debian image and does not ship this by default,
@@ -39,7 +40,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 && \
 
 # 7b. (FIX) Install the latest 'eurostat' from CRAN
 # This bypasses the conda-forge version issue and fixes the '410 Gone' API error.
-RUN /opt/conda/bin/R -e "install.packages('eurostat', repos='https://cloud.r-project.org/', dependencies=TRUE)"
+# Pinned to the version verified against the live Eurostat API (Sept 2026).
+RUN /opt/conda/bin/R -e "remotes::install_version('eurostat', version='4.1.1', repos='https://cloud.r-project.org/', dependencies=TRUE, upgrade='never'); if (!requireNamespace('eurostat', quietly=TRUE)) quit(status=1)"
 
 # 8. Copy R scripts (reusable functions) into the standard D2K source folder
 # Adds reusable R scripts into the container

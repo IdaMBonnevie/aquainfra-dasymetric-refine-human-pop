@@ -5,42 +5,49 @@ channels:
   - conda-forge # Use conda-forge as the primary (and only) channel
   - nodefaults  # Do NOT fall back to the Anaconda 'defaults' channel (licensing + reproducibility)
 dependencies:
+  # Versions are pinned to the image that produced the published Galaxy
+  # workflow results (built July 2026), so rebuilding the image gives the same
+  # environment instead of whatever is newest on conda-forge that day.
   # --- 1. R Runtime ---
   # R 4.4 is required so conda-forge can supply terra >= 1.8.5 and tmap 4.x as
   # binaries (the create_visualisations.R script uses the tmap 4 API). On R 4.3
   # conda-forge caps at terra 1.7.83 / tmap 3.3, which are mutually incompatible.
-  - r-base=4.4 # The R language interpreter (version 4.4)
+  - r-base=4.4.3 # The R language interpreter (version 4.4.3)
 
   # --- 2. Core System Geospatial Libs (KEEP ALL) ---
-  - gdal # Geospatial Data Abstraction Library
-  - proj # Library for coordinate reference system (CRS) transformations
-  - geos # Geometry Engine, Open Source
-  - udunits2 # Library for handling scientific units
+  - gdal=3.12.3 # Geospatial Data Abstraction Library
+  - proj=9.7.1 # Library for coordinate reference system (CRS) transformations
+  - geos=3.14.1 # Geometry Engine, Open Source
+  - udunits2=2.2.28 # Library for handling scientific units
+  # libxml2 must be pinned too: newer builds replace the base image's copy and
+  # delete libxml2.so.16 during install, which breaks sf, xml2 and mamba.
+  - libxml2=2.14.6
+  - libxml2-16=2.14.6
 
   # --- 3. R Packages (Conda-Installed) ---
-  - r-sf # Simple Features
-  - r-terra # Spatial Data Analysis
-  - r-dplyr # Data Manipulation
+  - r-sf=1.1_0 # Simple Features
+  - r-terra=1.9_34 # Spatial Data Analysis
+  - r-dplyr=1.2.1 # Data Manipulation
   # r-areal is not on conda-forge (only Anaconda defaults); installed via CRAN in
   # .binder/postBuild instead. It is a pure-R package, so no compiler is needed.
-  - r-classint # Calculate class breaks
-  - r-ggplot2 # Data visualization
-  - r-units # Unit conversions
-  - r-rlang # Low-level R programming tools
-  - r-tidyverse # A collection of R packages for data science
-  - r-rcolorbrewer # Color palettes for maps
-  - pandoc # Document converter (NEEDED for htmlwidgets)
-  - r-curl # Dependency for R's internal package downloader
-  - r-codetools # Solves 'terra' warnings
-  - r-leaflet
-  - r-htmlwidgets
+  - r-classint=0.4_11 # Calculate class breaks
+  - r-ggplot2=4.0.3 # Data visualization
+  - r-units=1.0_1 # Unit conversions
+  - r-rlang=1.3.0 # Low-level R programming tools
+  - r-tidyverse=2.0.0 # A collection of R packages for data science
+  - r-rcolorbrewer=1.1_3 # Color palettes for maps
+  - pandoc=3.10 # Document converter (NEEDED for htmlwidgets)
+  - r-curl=7.1.0 # Dependency for R's internal package downloader
+  - r-codetools=0.2_20 # Solves 'terra' warnings
+  - r-leaflet=2.2.3
+  - r-htmlwidgets=1.6.4
 
   # --- 4. R Packages (added for human-population-toolbox scripts) ---
-  - r-plotly # Interactive plots (library(plotly))
-  - r-tmap # Thematic maps (library(tmap))
-  - r-metrics # Evaluation metrics: RMSE, MAE, etc. (library(Metrics))
-  - r-arrow # Apache Arrow / Parquet I/O (library(arrow))
-  - r-httr # HTTP requests (library(httr))
+  - r-plotly=4.12.0 # Interactive plots (library(plotly))
+  - r-tmap=4.4_1 # Thematic maps (library(tmap))
+  - r-metrics=0.1.4 # Evaluation metrics: RMSE, MAE, etc. (library(Metrics))
+  - r-arrow=24.0.0 # Apache Arrow / Parquet I/O (library(arrow))
+  - r-httr=1.4.8 # HTTP requests (library(httr))
 
   # (Packages missed during optimization)
   # The following are NOT on conda-forge, so they are installed via CRAN in
@@ -49,5 +56,5 @@ dependencies:
   #   - giscoR   : conda only has 0.4.0 (gisco_get_lau() caps at LAU year 2020);
   #                CRAN gives >= 0.5.0 (adds LAU year 2021+)
   #   - areal    : not packaged on conda-forge at all
-  - r-remotes
-  - r-foreign
+  - r-remotes=2.5.0
+  - r-foreign=0.8_91
