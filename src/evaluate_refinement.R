@@ -55,31 +55,33 @@ add_evaluations_to_censusgrid <- function(refinement_reference_cropped,
   pop_census2 <- terra::extract(refinement_reference_simple, census_grid_eval2, fun = sum, na.rm = TRUE)
   census_grid_eval2$pop_est_cell2 <- pop_census2[,2]
   
+  # limit to grid cells with values
+  # which() drops rows where a condition is NA; plain logical indexing would
+  # instead insert blank rows (no GRD_ID, empty geometry) into the result.
+  census_grid_eval1 <- census_grid_eval1[
+    which(!(is.na(census_grid_eval1$pop_est_cell1) & is.na(census_grid_eval1[[census_grid_value_col]]))),
+  ]
+  census_grid_eval1 <- census_grid_eval1[
+    which(!((census_grid_eval1$pop_est_cell1 == 0) & is.na(census_grid_eval1[[census_grid_value_col]]))),
+  ]
+  census_grid_eval1 <- census_grid_eval1[
+    which(!((census_grid_eval1$pop_est_cell1 == 0) & (census_grid_eval1[[census_grid_value_col]] == 0))),
+  ]
+  census_grid_eval1 <- census_grid_eval1[
+    which(!(is.na(census_grid_eval1$pop_est_cell1) & (census_grid_eval1[[census_grid_value_col]] == 0))),
+  ]
   # limit to grid cells with values 
-  census_grid_eval1 <- census_grid_eval1[
-    !(is.na(census_grid_eval1$pop_est_cell1) & is.na(census_grid_eval1[[census_grid_value_col]])),
-  ]
-  census_grid_eval1 <- census_grid_eval1[
-    !((census_grid_eval1$pop_est_cell1 == 0) & is.na(census_grid_eval1[[census_grid_value_col]])),
-  ]
-  census_grid_eval1 <- census_grid_eval1[
-    !((census_grid_eval1$pop_est_cell1 == 0) & (census_grid_eval1[[census_grid_value_col]] == 0)),
-  ]
-  census_grid_eval1 <- census_grid_eval1[
-    !(is.na(census_grid_eval1$pop_est_cell1) & (census_grid_eval1[[census_grid_value_col]] == 0)),
-  ]
-  # limit to grid cells with values 
   census_grid_eval2 <- census_grid_eval2[
-    !(is.na(census_grid_eval2$pop_est_cell2) & is.na(census_grid_eval2[[census_grid_value_col]])),
+    which(!(is.na(census_grid_eval2$pop_est_cell2) & is.na(census_grid_eval2[[census_grid_value_col]]))),
   ]
   census_grid_eval2 <- census_grid_eval2[
-    !((census_grid_eval2$pop_est_cell2 == 0) & is.na(census_grid_eval2[[census_grid_value_col]])),
+    which(!((census_grid_eval2$pop_est_cell2 == 0) & is.na(census_grid_eval2[[census_grid_value_col]]))),
   ]
   census_grid_eval2 <- census_grid_eval2[
-    !((census_grid_eval2$pop_est_cell2 == 0) & (census_grid_eval2[[census_grid_value_col]] == 0)),
+    which(!((census_grid_eval2$pop_est_cell2 == 0) & (census_grid_eval2[[census_grid_value_col]] == 0))),
   ]
   census_grid_eval2 <- census_grid_eval2[
-    !(is.na(census_grid_eval2$pop_est_cell2) & (census_grid_eval2[[census_grid_value_col]] == 0)),
+    which(!(is.na(census_grid_eval2$pop_est_cell2) & (census_grid_eval2[[census_grid_value_col]] == 0))),
   ]
   
   # Replace NA or NaN in the estimated pop_est column
